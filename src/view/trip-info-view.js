@@ -13,4 +13,8 @@ export default class TripInfoView {
 
     return this.element;
   }
+
+  removeElement() {
+    this.element = null;
+  }
 }

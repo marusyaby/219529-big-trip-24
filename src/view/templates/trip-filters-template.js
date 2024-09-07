@@ -1,22 +1,20 @@
-const FILTER_VALUES = [
+export const FILTER_VALUES = [
   'everything',
   'future',
   'present',
   'past'
 ];
 
-function createTripFilterTemplate(value, isChecked) {
-  return `
+const createTripFilterTemplate = (value, isChecked) => `
     <div class="trip-filters__filter">
                   <input id="filter-${value}" class="trip-filters__filter-input  visually-hidden" type="radio" name="trip-filter" value="${value}" ${isChecked ? 'checked' : ''}>
                   <label class="trip-filters__filter-label" for="filter-${value}">${value}</label>
                 </div>
   `;
-}
 
-export function createTripFiltersTemplate() {
-  const tripFilterElements = FILTER_VALUES.map((value, index) =>
-    createTripFilterTemplate(value, index === 0)).join('');
+export const createTripFiltersTemplate = (checkedFilter) => {
+  const tripFilterElements = FILTER_VALUES.map((value) =>
+    createTripFilterTemplate(value, value === checkedFilter)).join('');
 
   return `
     <div class="trip-main__trip-controls  trip-controls">
@@ -31,4 +29,4 @@ export function createTripFiltersTemplate() {
       </div>
     </div>
   `;
-}
+};

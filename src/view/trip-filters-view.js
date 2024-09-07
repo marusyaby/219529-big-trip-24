@@ -1,9 +1,12 @@
 import {createTripFiltersTemplate} from './templates/trip-filters-template.js';
+import {FILTER_VALUES} from './templates/trip-filters-template.js';
 import {createElement} from '../render.js';
+
+const checkedFilter = FILTER_VALUES[0];
 
 export default class TripFiltersView {
   getTemplate() {
-    return createTripFiltersTemplate();
+    return createTripFiltersTemplate(checkedFilter);
   }
 
   getElement() {
@@ -12,5 +15,9 @@ export default class TripFiltersView {
     }
 
     return this.element;
+  }
+
+  removeElement() {
+    this.element = null;
   }
 }
