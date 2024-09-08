@@ -1,9 +1,9 @@
-import {createTripFiltersTemplate} from './templates/trip-filters-template.js';
+import {createEventsMessageTemplate} from './templates/trip-events-message-template.js';
 import {createElement} from '../render.js';
 
-export default class TripFiltersView {
+export default class EventsMessageView {
   getTemplate() {
-    return createTripFiltersTemplate();
+    return createEventsMessageTemplate();
   }
 
   getElement() {

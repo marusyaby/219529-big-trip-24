@@ -1,9 +1,13 @@
-import {createTripFiltersTemplate} from './templates/trip-filters-template.js';
 import {createElement} from '../render.js';
+import {createEventsItemFormTemplate} from './templates/events-item-form-template.js';
 
-export default class TripFiltersView {
+export default class EventsItemFormView {
+  constructor(isNewItem) {
+    this.isNewItem = isNewItem;
+  }
+
   getTemplate() {
-    return createTripFiltersTemplate();
+    return createEventsItemFormTemplate(this.isNewItem);
   }
 
   getElement() {

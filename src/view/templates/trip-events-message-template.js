@@ -1,4 +1,4 @@
-export const TripEventsMessage = {
+export const EventsMessage = {
   FAIL: 'Failed to load latest route information',
   LOADING: 'Loading...',
   EMPTY: {
@@ -9,5 +9,7 @@ export const TripEventsMessage = {
   }
 };
 
-export const createTripEventsMessageTemplate = (message) => `
+const currentEventsMessage = EventsMessage.EMPTY.EVERYTHING;
+
+export const createEventsMessageTemplate = (message = currentEventsMessage) => `
   <p class="trip-events__msg">${message}</p>`;
