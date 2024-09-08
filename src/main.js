@@ -8,6 +8,7 @@ import EventsItemFormView from './view/events-item-form-view.js';
 import EventsItemDetailsView from './view/events-item-details-view.js';
 import EventsItemEditOffersView from './view/events-item-offers-view.js';
 import EventsItemDestinationView from './view/events-item-destination-view.js';
+import EventsItemView from './view/events-item-view.js';
 // import EventsMessageView from './view/events-message-view.js';
 
 const headerElement = document.querySelector('.trip-main');
@@ -32,3 +33,5 @@ render(new EventsItemEditOffersView, eventItemDetailsElement);
 render(new EventsItemDestinationView, eventItemDetailsElement);
 
 render(new EventsItemFormView(false), eventsListElement);
+render(new EventsItemView, eventsListElement);
+
