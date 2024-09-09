@@ -11,7 +11,8 @@ export const EVENT_TYPES = [
   'sightseeing',
   'restaurant',
 ];
-
+const OFFERS_COUNT = 1;
+const PHOTOS_COUNT = 8;
 const activeType = EVENT_TYPES[2];
 
 const createEventTypeItem = (value, isChecked) => `
@@ -31,11 +32,67 @@ const createRollupButtonTemplate = () => `
                   </button>
 `;
 
+const createOfferTemplate = () => `
+                    <div class="event__available-offers">
+                      <div class="event__offer-selector">
+                        <input class="event__offer-checkbox  visually-hidden" id="event-offer-luggage-1" type="checkbox" name="event-offer-luggage" checked="">
+                        <label class="event__offer-label" for="event-offer-luggage-1">
+                          <span class="event__offer-title">Add luggage</span>
+                          +€&nbsp;
+                          <span class="event__offer-price">30</span>
+                        </label>
+                      </div>
+`;
+const createOffersTemplate = () => {
+  const offers = [...new Array(OFFERS_COUNT)].map(() => createOfferTemplate()).join('');
+  return `<section class="event__section  event__section--offers">
+                    <h3 class="event__section-title  event__section-title--offers">Offers</h3>
+
+
+                    ${offers}
+
+                    </div>
+                  </section>
+`;
+};
+
+const createDestinationPhotoTemplate = () => `
+  <img class="event__photo" src="img/photos/1.jpg" alt="Event photo">
+`;
+
+const createDestinationTemplate = () => {
+  const photos = [...new Array(PHOTOS_COUNT)].map(() => createDestinationPhotoTemplate()).join('');
+  return `<section class="event__section  event__section--destination">
+    <h3
+      class="event__section-title  event__section-title--destination">Destination</h3>
+    <p class="event__destination-description">Geneva is a city in Switzerland
+      that lies at the southern tip of expansive Lac Léman (Lake Geneva).
+      Surrounded by the Alps and Jura mountains, the city has views of dramatic
+      Mont Blanc.</p>
+
+    <div class="event__photos-container">
+      <div class="event__photos-tape">
+        ${photos}
+      </div>
+    </div>
+  </section>`;
+};
+
+const createFormDetailsTemplate = () => {
+  return `
+  <section class="event__details">
+${createOffersTemplate()}
+${createDestinationTemplate()}
+</section>
+`;
+};
+
 export const createEventsItemFormTemplate = (isNewEvent) => {
   const eventTypeItems = EVENT_TYPES.map((value) => createEventTypeItem(value, value === activeType)).
     join('');
 
-  return `<li class="trip-events__item">
+  return `
+            <li class="trip-events__item">
               <form class="event event--edit" action="#" method="post">
                 <header class="event__header">
                   <div class="event__type-wrapper">
@@ -89,6 +146,8 @@ export const createEventsItemFormTemplate = (isNewEvent) => {
                   ${isNewEvent ? '' : createRollupButtonTemplate()}
 
                 </header>
+
+                ${createFormDetailsTemplate()}
 
               </form>
             </li>
