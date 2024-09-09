@@ -78,14 +78,12 @@ const createDestinationTemplate = () => {
   </section>`;
 };
 
-const createFormDetailsTemplate = () => {
-  return `
+const createFormDetailsTemplate = () => `
   <section class="event__details">
 ${createOffersTemplate()}
 ${createDestinationTemplate()}
 </section>
 `;
-};
 
 export const createEventsItemFormTemplate = (isNewEvent) => {
   const eventTypeItems = EVENT_TYPES.map((value) => createEventTypeItem(value, value === activeType)).
