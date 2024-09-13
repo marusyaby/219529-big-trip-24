@@ -2,8 +2,12 @@ import {createElement} from '../render.js';
 import {createEventsItemTemplate} from './templates/events-item-template.js';
 
 export default class EventsItemView {
+  constructor(event) {
+    this.event = event;
+  }
+
   getTemplate() {
-    return createEventsItemTemplate();
+    return createEventsItemTemplate(this.event);
   }
 
   getElement() {
