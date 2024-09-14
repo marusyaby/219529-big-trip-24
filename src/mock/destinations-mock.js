@@ -1,4 +1,4 @@
-export const DESTINATIONS =
+export const destinationsMock =
   [
     {
       'id': '944405b7-a7c1-4021-a3bd-90445f1fde11',
