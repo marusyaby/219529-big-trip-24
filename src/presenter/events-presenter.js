@@ -5,10 +5,6 @@ import EventsItemFormView from '../view/events-item-form-view.js';
 import EventsItemView from '../view/events-item-view.js';
 
 export default class EventsPresenter {
-  eventsList = new EventsListView();
-  eventsItemNewForm = new EventsItemFormView(true);
-  eventsItemEditForm = new EventsItemFormView(false);
-
   constructor({eventsContainer, eventsModel, destinationsModel, offersModel}) {
     this.eventsContainer = eventsContainer;
     this.eventsModel = eventsModel;
@@ -16,31 +12,45 @@ export default class EventsPresenter {
     this.offersModel = offersModel;
   }
 
-  init() {
+  renderEventsSort() {
+    render(new EventsSortView, this.eventsContainer);
+  }
+
+  renderEventsList() {
+    this.eventsList = new EventsListView();
+    render(this.eventsList, this.eventsContainer);
+  }
+
+  renderEventsItemNewForm() {
+    this.eventsItemNewForm = new EventsItemFormView(true);
+    render(this.eventsItemNewForm, this.eventsList.getElement());
+  }
+
+  renderEventsItemEditForm() {
+    this.eventsItemEditForm = new EventsItemFormView(false);
+    render(this.eventsItemEditForm, this.eventsList.getElement());
+  }
+
+  renderEventsItems() {
     this.events = [...this.eventsModel.getEvents()];
 
-    // console.log(this.events);
-    // console.log(this.offersModel.getOffers());
-    // console.log(this.destinationsModel.getDestinations());
-    // console.log(this.offersModel.getOffersByType('taxi'));
-
-
-    render(new EventsSortView, this.eventsContainer);
-    render(this.eventsList, this.eventsContainer);
-    render(this.eventsItemNewForm, this.eventsList.getElement());
-    render(this.eventsItemEditForm, this.eventsList.getElement());
-
-    [...new Array(this.events.length)].map((element, index) => {
-      const event = this.events[index];
+    for (let i = 1; i < this.events.length; i++) {
+      const event = this.events[i];
       const destination = this.destinationsModel.getDestinationsById(
-        this.events[index].destination);
+        this.events[i].destination);
       const offers = this.offersModel.getOffersById(
-        this.events[index].type, this.events[index].offers);
-
-      // console.log(this.events[index].offers[0], this.offersModel.getOffersByType(this.events[index].type));
+        this.events[i].type, this.events[i].offers);
 
       render(new EventsItemView({event, destination, offers}),
         this.eventsList.getElement());
-    });
+    }
+  }
+
+  init() {
+    this.renderEventsSort();
+    this.renderEventsList();
+    this.renderEventsItemNewForm();
+    this.renderEventsItemEditForm();
+    this.renderEventsItems();
   }
 }
