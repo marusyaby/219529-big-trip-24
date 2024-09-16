@@ -1,5 +1,9 @@
-import {capitalizeFirstLetter} from '../../utils.js';
-import * as dayjs from 'dayjs';
+import {
+  capitalizeFirstLetter,
+  Format,
+  formatDate,
+  getDuration,
+} from '../../utils.js';
 
 const createOfferTemplate = (title, price) => `
                   <li class="event__offer">
@@ -19,24 +23,21 @@ export const createEventsItemTemplate = (event, destination, offers) => {
   const {basePrice, isFavorite, type, dateFrom, dateTo} = event;
   const {name} = destination;
 
-  console.log(dayjs(dateFrom).format('DD_HH_mm'));
-  console.log(dayjs(dateTo).format('DD_HH_mm'));
-
   return `
             <li class="trip-events__item">
               <div class="event">
-                <time class="event__date" datetime="${dateFrom}">${dayjs(dateFrom).format('MMM[ ]DD')}</time>
+                <time class="event__date" datetime="${dateFrom}">${formatDate(dateFrom, Format.MONTH_DAY)}</time>
                 <div class="event__type">
                   <img class="event__type-icon" width="42" height="42" src="img/icons/${type}.png" alt="Event type icon">
                 </div>
                 <h3 class="event__title">${capitalizeFirstLetter(type)} ${capitalizeFirstLetter(name)}</h3>
                 <div class="event__schedule">
                   <p class="event__time">
-                    <time class="event__start-time" datetime="${dateFrom}">${dayjs(dateFrom).format('HH:mm')}</time>
+                    <time class="event__start-time" datetime="${dateFrom}">${formatDate(dateFrom, Format.HOURS_MINUTES)}</time>
                     —
-                    <time class="event__end-time" datetime="${dateTo}">${dayjs(dateTo).format('HH:mm')}</time>
+                    <time class="event__end-time" datetime="${dateTo}">${formatDate(dateTo, Format.HOURS_MINUTES)}</time>
                   </p>
-                  <p class="event__duration">${dayjs(dayjs(dateTo).diff(dateFrom)).format('DD[D] HH[H] mm[M]')}</p>
+                  <p class="event__duration">${getDuration(dateFrom, dateTo)}</p>
                 </div>
                 <p class="event__price">
                   €&nbsp;<span class="event__price-value">${basePrice}</span>
@@ -45,7 +46,7 @@ export const createEventsItemTemplate = (event, destination, offers) => {
                 <ul class="event__selected-offers">
 
                 ${createOffersTemplate(offers)}
-${dateFrom}
+
                 </ul>
                 <button class="event__favorite-btn
                     ${isFavorite ? 'event__favorite-btn--active' : ''}" type="button">
