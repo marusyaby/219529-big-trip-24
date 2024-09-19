@@ -1,4 +1,5 @@
-import {capitalizeFirstLetter} from '../../utils.js';
+import {capitalizeFirstLetter, Format, formatDate} from '../../utils.js';
+import dayjs from 'dayjs';
 
 export const EVENT_TYPES = [
   'taxi',
@@ -11,9 +12,6 @@ export const EVENT_TYPES = [
   'sightseeing',
   'restaurant',
 ];
-const OFFERS_COUNT = 1;
-const PHOTOS_COUNT = 8;
-const activeType = EVENT_TYPES[2];
 
 const createEventTypeItem = (value, isChecked) => `
     <div class="event__type-item">
@@ -22,32 +20,30 @@ const createEventTypeItem = (value, isChecked) => `
                         </div>
 `;
 
-const createDestinationsItemOptionTemplate = (value = 'Geneva') => `
-                      <option value="${value}"></option>
-`;
+const createDestinationsItemOptionTemplate = (city) =>
+  `<option value="${city ? city : ''}"></option>`;
 
-const createRollupButtonTemplate = () => `
-                  <button class="event__rollup-btn" type="button">
-                    <span class="visually-hidden">Open event</span>
-                  </button>
-`;
+const createOfferTemplate = (offer, activeOffers, id) => {
+  const isChecked = activeOffers.includes(offer);
 
-const createOfferTemplate = () => `
+  return `
                     <div class="event__available-offers">
                       <div class="event__offer-selector">
-                        <input class="event__offer-checkbox  visually-hidden" id="event-offer-luggage-1" type="checkbox" name="event-offer-luggage" checked="">
-                        <label class="event__offer-label" for="event-offer-luggage-1">
-                          <span class="event__offer-title">Add luggage</span>
+                        <input class="event__offer-checkbox  visually-hidden" id="${offer.id}-${id}" type="checkbox" name="${offer.title}" ${isChecked ? 'checked' : ''}>
+                        <label class="event__offer-label" for="${offer.id}-${id}">
+                          <span class="event__offer-title">${offer.title}</span>
                           +€&nbsp;
-                          <span class="event__offer-price">30</span>
+                          <span class="event__offer-price">${offer.price}</span>
                         </label>
                       </div>
 `;
-const createOffersTemplate = () => {
-  const offers = [...new Array(OFFERS_COUNT)].map(() => createOfferTemplate()).join('');
-  return `<section class="event__section  event__section--offers">
-                    <h3 class="event__section-title  event__section-title--offers">Offers</h3>
+};
 
+const createOffersTemplate = (activeOffers, allOffers, id) => {
+  const offers = allOffers.map((offer) => createOfferTemplate(offer, activeOffers, id)).join('');
+  return `
+    <section class="event__section  event__section--offers">
+                    <h3 class="event__section-title  event__section-title--offers">Offers</h3>
 
                     ${offers}
 
@@ -56,86 +52,104 @@ const createOffersTemplate = () => {
 `;
 };
 
-const createDestinationPhotoTemplate = () => `
-  <img class="event__photo" src="img/photos/1.jpg" alt="Event photo">
+const createDestinationPhotoTemplate = (picture) => `
+  <img class="event__photo" src=${picture.src} alt="${picture.description}">
 `;
 
-const createDestinationTemplate = () => {
-  const photos = [...new Array(PHOTOS_COUNT)].map(() => createDestinationPhotoTemplate()).join('');
-  return `<section class="event__section  event__section--destination">
-    <h3
-      class="event__section-title  event__section-title--destination">Destination</h3>
-    <p class="event__destination-description">Geneva is a city in Switzerland
-      that lies at the southern tip of expansive Lac Léman (Lake Geneva).
-      Surrounded by the Alps and Jura mountains, the city has views of dramatic
-      Mont Blanc.</p>
+const createDestinationPhotosTemplate = (destination) => {
+  const pictures = (destination.pictures).map((picture) =>
+    createDestinationPhotoTemplate(picture))
+    .join('');
 
+  return `
     <div class="event__photos-container">
       <div class="event__photos-tape">
-        ${photos}
+        ${pictures}
       </div>
-    </div>
-  </section>`;
+    </div>`;
 };
 
-const createFormDetailsTemplate = () => `
-  <section class="event__details">
-${createOffersTemplate()}
-${createDestinationTemplate()}
-</section>
+const createDestinationTemplate = (destination) =>
+  `<section class="event__section  event__section--destination">
+    <h3
+      class="event__section-title  event__section-title--destination">Destination</h3>
+    <p class="event__destination-description">${destination.description ? destination.description : ''}</p>
+
+    ${destination.pictures.length > 0 ? createDestinationPhotosTemplate(destination) : ''}
+
+  </section>`;
+
+const createFormDetailsTemplate = (destination, activeOffers, allOffers, id) =>
+  `<section class="event__details">
+${allOffers.length > 0 ? createOffersTemplate(activeOffers, allOffers, id) : ''}
+${!!destination.description && !!destination.pictures ? createDestinationTemplate(destination) : ''}
+</section>`;
+
+const createRollupButtonTemplate = () => `
+                  <button class="event__rollup-btn" type="button">
+                    <span class="visually-hidden">Open event</span>
+                  </button>
 `;
 
-export const createEventsItemFormTemplate = (isNewEvent) => {
-  const eventTypeItems = EVENT_TYPES.map((value) => createEventTypeItem(value, value === activeType)).
-    join('');
+export const createEventsItemFormTemplate = (isNewEvent, event, destination, activeOffers, allDestinations, allOffers) => {
+  const {id, type, dateFrom, dateTo, basePrice} = event;
+  const {name} = destination;
+  const eventTypeItemsList = EVENT_TYPES.map((value) =>
+    createEventTypeItem(value, value === type))
+    .join('');
+  const citiesDatalist = (allDestinations).map((item) =>
+    createDestinationsItemOptionTemplate(item.name))
+    .join('');
+  const eventStartTime = dayjs(dateFrom).isValid() ? formatDate(dateFrom, Format.FULL_DATE) : '';
+  const eventEndTime = dayjs(dateTo).isValid() ? formatDate(dateFrom, Format.FULL_DATE) : '';
 
   return `
             <li class="trip-events__item">
               <form class="event event--edit" action="#" method="post">
                 <header class="event__header">
                   <div class="event__type-wrapper">
-                    <label class="event__type  event__type-btn" for="event-type-toggle-1">
+                    <label class="event__type  event__type-btn" for="event-type-toggle-${id}">
                       <span class="visually-hidden">Choose event type</span>
-                      <img class="event__type-icon" width="17" height="17" src="img/icons/${activeType}.png" alt="Event type icon">
+                      <img class="event__type-icon" width="17" height="17" src="img/icons/${type}.png" alt="Event type icon">
                     </label>
-                    <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox">
+                    <input class="event__type-toggle  visually-hidden" id="event-type-toggle-${id}" type="checkbox">
 
                     <div class="event__type-list">
                       <fieldset class="event__type-group">
                         <legend class="visually-hidden">Event type</legend>
 
-                        ${eventTypeItems}
+                        ${eventTypeItemsList}
 
                       </fieldset>
                     </div>
                   </div>
 
                   <div class="event__field-group  event__field-group--destination">
-                    <label class="event__label  event__type-output" for="event-destination-1">
-                      Flight
+                    <label class="event__label  event__type-output" for="event-destination-${id}">
+                      ${capitalizeFirstLetter(type)}
                     </label>
-                    <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="Geneva" list="destination-list-1">
-                    <datalist id="destination-list-1">
+                    <input class="event__input  event__input--destination" id="event-destination-${id}" type="text" name="event-destination" value="${name ? name : ''}" list="destination-list-${id}">
+                    <datalist id="destination-list-${id}">
 
-                    ${createDestinationsItemOptionTemplate()}
+                    ${citiesDatalist}
 
                     </datalist>
                   </div>
 
                   <div class="event__field-group  event__field-group--time">
-                    <label class="visually-hidden" for="event-start-time-1">From</label>
-                    <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="19/03/19 00:00">
+                    <label class="visually-hidden" for="event-start-time-${id}">From</label>
+                    <input class="event__input  event__input--time" id="event-start-time-${id}" type="text" name="event-start-time" value="${eventStartTime}">
                     —
-                    <label class="visually-hidden" for="event-end-time-1">To</label>
-                    <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="19/03/19 00:00">
+                    <label class="visually-hidden" for="event-end-time-${id}">To</label>
+                    <input class="event__input  event__input--time" id="event-end-time-${id}" type="text" name="event-end-time" value="${eventEndTime}">
                   </div>
 
                   <div class="event__field-group  event__field-group--price">
-                    <label class="event__label" for="event-price-1">
+                    <label class="event__label" for="event-price-${id}">
                       <span class="visually-hidden">Price</span>
                       €
                     </label>
-                    <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="">
+                    <input class="event__input  event__input--price" id="event-price-${id}" type="text" name="event-price" value="${basePrice ? basePrice : ''}">
                   </div>
 
                   <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
@@ -145,7 +159,7 @@ export const createEventsItemFormTemplate = (isNewEvent) => {
 
                 </header>
 
-                ${createFormDetailsTemplate()}
+                ${createFormDetailsTemplate(destination, activeOffers, allOffers, id)}
 
               </form>
             </li>

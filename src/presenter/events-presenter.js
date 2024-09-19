@@ -4,6 +4,17 @@ import EventsListView from '../view/events-list-view.js';
 import EventsItemFormView from '../view/events-item-form-view.js';
 import EventsItemView from '../view/events-item-view.js';
 
+const BLANK_EVENT = {
+  'id': '',
+  'basePrice': '',
+  'dateFrom': '',
+  'dateTo': '',
+  'destination': '',
+  'isFavorite': false,
+  'offers': [],
+  'type': 'flight',
+};
+
 export default class EventsPresenter {
   constructor({eventsContainer, eventsModel, destinationsModel, offersModel}) {
     this.eventsContainer = eventsContainer;
@@ -22,12 +33,24 @@ export default class EventsPresenter {
   }
 
   renderEventsItemNewForm() {
-    this.eventsItemNewForm = new EventsItemFormView(true);
+    const allDestinations = [...this.destinationsModel.getDestinations()];
+    const allOffers = this.offersModel.getOffersByType(BLANK_EVENT.type);
+
+    this.eventsItemNewForm = new EventsItemFormView(true, BLANK_EVENT, BLANK_EVENT.destination, BLANK_EVENT.offers, allDestinations, allOffers);
     render(this.eventsItemNewForm, this.eventsList.getElement());
   }
 
   renderEventsItemEditForm() {
-    this.eventsItemEditForm = new EventsItemFormView(false);
+    this.events = [...this.eventsModel.getEvents()];
+    const event = this.events[0];
+    const destination = this.destinationsModel.getDestinationsById(
+      this.events[0].destination);
+    const offers = this.offersModel.getOffersById(
+      this.events[0].type, this.events[0].offers);
+    const allDestinations = [...this.destinationsModel.getDestinations()];
+    const allOffers = this.offersModel.getOffersByType(this.events[0].type);
+
+    this.eventsItemEditForm = new EventsItemFormView(false, event, destination, offers, allDestinations, allOffers);
     render(this.eventsItemEditForm, this.eventsList.getElement());
   }
 

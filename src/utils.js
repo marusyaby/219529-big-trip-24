@@ -1,8 +1,9 @@
 import dayjs from 'dayjs';
 
 export const Format = {
-  MONTH_DAY: 'MMM[ ]DD',
-  HOURS_MINUTES: 'HH:mm',
+  DATE: 'MMM[ ]DD',
+  TIME: 'HH:mm',
+  FULL_DATE: 'DD/MM/YY[ ]HH:mm'
 };
 
 export const capitalizeFirstLetter = (value) =>
