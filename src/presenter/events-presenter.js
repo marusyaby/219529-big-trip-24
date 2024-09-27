@@ -1,5 +1,5 @@
 import EventsSortView from '../view/events-sort-view.js';
-import {render} from '../framework/render.js';
+import {render, replace} from '../framework/render.js';
 import EventsListView from '../view/events-list-view.js';
 import EventsItemFormView from '../view/events-item-form-view.js';
 import EventsItemView from '../view/events-item-view.js';
@@ -68,15 +68,30 @@ export default class EventsPresenter {
       destination,
       offers,
       allDestinations,
-      allOffers});
+      allOffers,
+    });
     render(this.eventsItemEditForm, this.eventsList.element);
   }
 
   #renderEventItem(event, destination, offers) {
+    const escKeyDownHandler = (evt) => {
+      if (evt.key === 'Escape') {
+        evt.preventDefault();
+        replaceFormToEvent();
+        document.removeEventListener('keydown', escKeyDownHandler);
+      }
+    };
+
+    const onOpenEditButtonClick = () => {
+      replaceEventToForm();
+      document.addEventListener('keydown', escKeyDownHandler);
+    };
+
     const eventItem = new EventsItemView({
       event,
       destination,
       offers,
+      onOpenEditButtonClick,
     });
 
     const eventItemForm = new EventsItemFormView({
@@ -88,7 +103,15 @@ export default class EventsPresenter {
       allOffers: this.#offersModel.getOffersByType(event.type),
     });
 
-    render(eventItemForm, this.eventsList.element);
+    function replaceEventToForm() {
+      replace(eventItemForm, eventItem);
+    }
+
+    function replaceFormToEvent() {
+      replace(eventItem, eventItemForm);
+    }
+
+    render(eventItem, this.eventsList.element);
   }
 
   #renderEventItems() {
