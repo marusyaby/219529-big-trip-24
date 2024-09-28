@@ -28,6 +28,12 @@ export default class EventsPresenter {
     this.#offersModel = offersModel;
   }
 
+  init() {
+    this.#renderEventsSort();
+    this.#renderEventsList();
+    this.#renderEventItems();
+  }
+
   #renderEventsSort() {
     render(new EventsSortView, this.#eventsContainer);
   }
@@ -52,27 +58,6 @@ export default class EventsPresenter {
     render(this.eventsItemNewForm, this.eventsList.element);
   }
 
-  #renderEventsItemEditForm() {
-    this.events = [...this.#eventsModel.events];
-    const event = this.events[0];
-    const destination = this.#destinationsModel.getDestinationsById(
-      this.events[0].destination);
-    const offers = this.#offersModel.getOffersById(
-      this.events[0].type, this.events[0].offers);
-    const allDestinations = [...this.#destinationsModel.destinations];
-    const allOffers = this.#offersModel.getOffersByType(this.events[0].type);
-
-    this.eventsItemEditForm = new EventsItemFormView({
-      isNewItem: false,
-      event,
-      destination,
-      offers,
-      allDestinations,
-      allOffers,
-    });
-    render(this.eventsItemEditForm, this.eventsList.element);
-  }
-
   #renderEventItem(event, destination, offers) {
     const escKeyDownHandler = (evt) => {
       if (evt.key === 'Escape') {
@@ -85,6 +70,16 @@ export default class EventsPresenter {
     const onOpenEditButtonClick = () => {
       replaceEventToForm();
       document.addEventListener('keydown', escKeyDownHandler);
+    };
+
+    const onCloseEditButtonClick = () => {
+      replaceFormToEvent();
+      document.removeEventListener('keydown', escKeyDownHandler);
+    };
+
+    const onFormSubmit = () => {
+      replaceFormToEvent();
+      document.removeEventListener('keydown', escKeyDownHandler);
     };
 
     const eventItem = new EventsItemView({
@@ -101,6 +96,8 @@ export default class EventsPresenter {
       offers,
       allDestinations: [...this.#destinationsModel.destinations],
       allOffers: this.#offersModel.getOffersByType(event.type),
+      onCloseEditButtonClick,
+      onFormSubmit,
     });
 
     function replaceEventToForm() {
@@ -125,13 +122,5 @@ export default class EventsPresenter {
 
       this.#renderEventItem(event, destination, offers);
     });
-  }
-
-  init() {
-    this.#renderEventsSort();
-    this.#renderEventsList();
-    // this.#renderEventsItemNewForm();
-    // this.#renderEventsItemEditForm();
-    this.#renderEventItems();
   }
 }
