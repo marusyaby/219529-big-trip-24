@@ -5,7 +5,7 @@ export default class EventsItemFormView extends AbstractView {
   #isNewItem = null;
   #event = null;
   #destination = null;
-  #offers = [];
+  #activeOffers = [];
   #allDestinations = [];
   #allOffers = [];
   #onCloseEditButtonClick = null;
@@ -15,7 +15,7 @@ export default class EventsItemFormView extends AbstractView {
     isNewItem,
     event,
     destination,
-    offers,
+    activeOffers,
     allDestinations,
     allOffers,
     onCloseEditButtonClick,
@@ -25,7 +25,7 @@ export default class EventsItemFormView extends AbstractView {
     this.#isNewItem = isNewItem;
     this.#event = event;
     this.#destination = destination;
-    this.#offers = offers;
+    this.#activeOffers = activeOffers;
     this.#allDestinations = allDestinations;
     this.#allOffers = allOffers;
     this.#onCloseEditButtonClick = onCloseEditButtonClick;
@@ -35,7 +35,7 @@ export default class EventsItemFormView extends AbstractView {
 
   get template() {
     return createEventsItemFormTemplate(this.#isNewItem, this.#event,
-      this.#destination, this.#offers, this.#allDestinations, this.#allOffers);
+      this.#destination, this.#activeOffers, this.#allDestinations, this.#allOffers);
   }
 
   #setEventListeners() {

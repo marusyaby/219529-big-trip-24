@@ -13,12 +13,12 @@ const createOfferTemplate = (title, price) => `
                   </li>
 `;
 
-const createOffersTemplate = (offers) =>
-  offers ?
-    offers.map((offer) => createOfferTemplate(offer.title, offer.price)).
+const createOffersTemplate = (activeOffers) =>
+  activeOffers ?
+    activeOffers.map((offer) => createOfferTemplate(offer.title, offer.price)).
       join('') : '';
 
-export const createEventsItemTemplate = (event, destination, offers) => {
+export const createEventsItemTemplate = (event, destination, activeOffers) => {
   const {basePrice, isFavorite, type, dateFrom, dateTo} = event;
   const {name} = destination;
 
@@ -44,7 +44,7 @@ export const createEventsItemTemplate = (event, destination, offers) => {
                 <h4 class="visually-hidden">Offers:</h4>
                 <ul class="event__selected-offers">
 
-                ${createOffersTemplate(offers)}
+                ${createOffersTemplate(activeOffers)}
 
                 </ul>
                 <button class="event__favorite-btn

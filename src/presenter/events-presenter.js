@@ -3,6 +3,7 @@ import {render, replace} from '../framework/render.js';
 import EventsListView from '../view/events-list-view.js';
 import EventsItemFormView from '../view/events-item-form-view.js';
 import EventsItemView from '../view/events-item-view.js';
+import EventsMessageView, {EventsMessage} from '../view/events-message-view.js';
 
 const BLANK_EVENT = {
   'id': '',
@@ -20,15 +21,24 @@ export default class EventsPresenter {
   #eventsModel = null;
   #destinationsModel = null;
   #offersModel = null;
+  #events = [];
+  #destinations = [];
 
   constructor({eventsContainer, eventsModel, destinationsModel, offersModel}) {
     this.#eventsContainer = eventsContainer;
     this.#eventsModel = eventsModel;
     this.#destinationsModel = destinationsModel;
     this.#offersModel = offersModel;
+    this.#events = [...this.#eventsModel.events];
+    this.#destinations = [...this.#destinationsModel.destinations];
   }
 
   init() {
+    if (this.#events.length === 0) {
+      this.#renderEventsMessage(EventsMessage.EMPTY.EVERYTHING);
+      return;
+    }
+
     this.#renderEventsSort();
     this.#renderEventsList();
     this.#renderEventItems();
@@ -43,22 +53,20 @@ export default class EventsPresenter {
     render(this.eventsList, this.#eventsContainer);
   }
 
-  #renderEventsItemNewForm() {
-    const allDestinations = [...this.#destinationsModel.destinations];
-    const allOffers = this.#offersModel.getOffersByType(BLANK_EVENT.type);
-
+  #renderEventItemNewForm() {
     this.eventsItemNewForm = new EventsItemFormView({
       isNewItem: true,
       event: BLANK_EVENT,
       destination: BLANK_EVENT.destination,
       offers: BLANK_EVENT.offers,
-      allDestinations,
-      allOffers,
+      allDestinations: this.#destinations,
+      allOffers: this.#offersModel.getOffersByType(BLANK_EVENT.type),
     });
+
     render(this.eventsItemNewForm, this.eventsList.element);
   }
 
-  #renderEventItem(event, destination, offers) {
+  #renderEventItem({event, destination, activeOffers}) {
     const escKeyDownHandler = (evt) => {
       if (evt.key === 'Escape') {
         evt.preventDefault();
@@ -85,7 +93,7 @@ export default class EventsPresenter {
     const eventItem = new EventsItemView({
       event,
       destination,
-      offers,
+      activeOffers,
       onOpenEditButtonClick,
     });
 
@@ -93,9 +101,9 @@ export default class EventsPresenter {
       isNewItem: false,
       event,
       destination,
-      offers,
-      allDestinations: [...this.#destinationsModel.destinations],
-      allOffers: this.#offersModel.getOffersByType(event.type),
+      activeOffers,
+      allDestinations: this.#destinations,
+      allOffers: [...this.#offersModel.getOffersByType(event.type)],
       onCloseEditButtonClick,
       onFormSubmit,
     });
@@ -112,15 +120,17 @@ export default class EventsPresenter {
   }
 
   #renderEventItems() {
-    const events = [...this.#eventsModel.events];
+    this.#events.forEach((event) => {
 
-    events.forEach((event) => {
-      const destination = this.#destinationsModel.getDestinationsById(
-        event.destination);
-      const offers = this.#offersModel.getOffersById(
-        event.type, event.offers);
-
-      this.#renderEventItem(event, destination, offers);
+      this.#renderEventItem({
+        event,
+        destination: this.#destinationsModel.getDestinationsById(event.destination),
+        activeOffers: this.#offersModel.getOffersById(event.type, event.offers)
+      });
     });
+  }
+
+  #renderEventsMessage(message) {
+    render(new EventsMessageView(message), this.#eventsContainer);
   }
 }
