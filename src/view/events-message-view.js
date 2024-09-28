@@ -1,20 +1,8 @@
 import {createEventsMessageTemplate} from './templates/trip-events-message-template.js';
-import {createElement} from '../render.js';
+import AbstractView from '../framework/view/abstract-view.js';
 
-export default class EventsMessageView {
-  getTemplate() {
+export default class EventsMessageView extends AbstractView {
+  get template() {
     return createEventsMessageTemplate();
-  }
-
-  getElement() {
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
-    }
-
-    return this.element;
-  }
-
-  removeElement() {
-    this.element = null;
   }
 }

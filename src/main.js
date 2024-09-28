@@ -7,13 +7,11 @@ import OffersModel from './model/offers-model.js';
 const headerElement = document.querySelector('.trip-main');
 const eventsElement = document.body.querySelector('.trip-events');
 
-const headerPresenter = new HeaderPresenter(headerElement);
-headerPresenter.init();
-
 const eventsModel = new EventsModel();
 const destinationsModel = new DestinationsModel();
 const offersModel = new OffersModel();
 
+const headerPresenter = new HeaderPresenter(headerElement);
 const eventsPresenter = new EventsPresenter({
   eventsContainer: eventsElement,
   eventsModel,
@@ -21,6 +19,7 @@ const eventsPresenter = new EventsPresenter({
   offersModel
 });
 
+headerPresenter.init();
 eventsPresenter.init();
 
 
