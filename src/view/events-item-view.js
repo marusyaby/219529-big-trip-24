@@ -4,20 +4,20 @@ import AbstractView from '../framework/view/abstract-view.js';
 export default class EventsItemView extends AbstractView {
   #event = null;
   #destination = null;
-  #offers = [];
+  #activeOffers = [];
   #onOpenEditButtonClick = null;
 
-  constructor({event, destination, offers, onOpenEditButtonClick}) {
+  constructor({event, destination, onOpenEditButtonClick, activeOffers}) {
     super();
     this.#event = event;
     this.#destination = destination;
-    this.#offers = offers;
+    this.#activeOffers = activeOffers;
     this.#onOpenEditButtonClick = onOpenEditButtonClick;
     this.#setEventListeners();
   }
 
   get template() {
-    return createEventsItemTemplate(this.#event, this.#destination, this.#offers);
+    return createEventsItemTemplate(this.#event, this.#destination, this.#activeOffers);
   }
 
   #setEventListeners() {

@@ -1,22 +1,16 @@
-export const FILTER_VALUES = [
-  'everything',
-  'future',
-  'present',
-  'past'
-];
-
-const activeFilterItem = FILTER_VALUES[0];
-
-const createTripFilterTemplate = (value, isChecked) => `
+const createTripFilterTemplate = (type, isActive, isVisible) => `
     <div class="trip-filters__filter">
-                  <input id="filter-${value}" class="trip-filters__filter-input  visually-hidden" type="radio" name="trip-filter" value="${value}" ${isChecked ? 'checked' : ''}>
-                  <label class="trip-filters__filter-label" for="filter-${value}">${value}</label>
+                  <input id="filter-${type}" class="trip-filters__filter-input  visually-hidden" type="radio" name="trip-filter" value="${type}" ${isActive ?
+  'checked' :
+  ''} ${isVisible ? '' : 'disabled'}>
+                  <label class="trip-filters__filter-label" for="filter-${type}">${type}</label>
                 </div>
   `;
 
-export const createTripFiltersTemplate = () => {
-  const tripFilterElements = FILTER_VALUES.map((value) =>
-    createTripFilterTemplate(value, value === activeFilterItem)).join('');
+export const createTripFiltersTemplate = (filters) => {
+  const tripFilterElements = filters.map((filter) =>
+    createTripFilterTemplate(filter.name, filter.isActive, filter.isClickable)).
+    join('');
 
   return `
     <div class="trip-main__trip-controls  trip-controls">
@@ -24,7 +18,7 @@ export const createTripFiltersTemplate = () => {
         <h2 class="visually-hidden">Filter events</h2>
         <form class="trip-filters" action="#" method="get">
 
-          ${tripFilterElements}
+        ${tripFilterElements}
 
           <button class="visually-hidden" type="submit">Accept filter</button>
         </form>

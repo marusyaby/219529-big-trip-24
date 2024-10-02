@@ -1,7 +1,7 @@
 import {
   capitalizeFirstLetter,
   Format,
-  formatDate,
+  formatDate, formatDuration,
   getDuration,
 } from '../../utils.js';
 
@@ -13,12 +13,12 @@ const createOfferTemplate = (title, price) => `
                   </li>
 `;
 
-const createOffersTemplate = (offers) =>
-  offers ?
-    offers.map((offer) => createOfferTemplate(offer.title, offer.price)).
+const createOffersTemplate = (activeOffers) =>
+  activeOffers ?
+    activeOffers.map((offer) => createOfferTemplate(offer.title, offer.price)).
       join('') : '';
 
-export const createEventsItemTemplate = (event, destination, offers) => {
+export const createEventsItemTemplate = (event, destination, activeOffers) => {
   const {basePrice, isFavorite, type, dateFrom, dateTo} = event;
   const {name} = destination;
 
@@ -36,7 +36,7 @@ export const createEventsItemTemplate = (event, destination, offers) => {
                     —
                     <time class="event__end-time" datetime="${dateTo}">${formatDate(dateTo, Format.TIME)}</time>
                   </p>
-                  <p class="event__duration">${getDuration(dateFrom, dateTo)}</p>
+                  <p class="event__duration">${formatDuration(getDuration(dateFrom, dateTo))}</p>
                 </div>
                 <p class="event__price">
                   €&nbsp;<span class="event__price-value">${basePrice}</span>
@@ -44,7 +44,7 @@ export const createEventsItemTemplate = (event, destination, offers) => {
                 <h4 class="visually-hidden">Offers:</h4>
                 <ul class="event__selected-offers">
 
-                ${createOffersTemplate(offers)}
+                ${createOffersTemplate(activeOffers)}
 
                 </ul>
                 <button class="event__favorite-btn
