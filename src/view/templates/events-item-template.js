@@ -1,7 +1,7 @@
 import {
   capitalizeFirstLetter,
   Format,
-  formatDate,
+  formatDate, formatDuration,
   getDuration,
 } from '../../utils.js';
 
@@ -36,7 +36,7 @@ export const createEventsItemTemplate = (event, destination, activeOffers) => {
                     —
                     <time class="event__end-time" datetime="${dateTo}">${formatDate(dateTo, Format.TIME)}</time>
                   </p>
-                  <p class="event__duration">${getDuration(dateFrom, dateTo)}</p>
+                  <p class="event__duration">${formatDuration(getDuration(dateFrom, dateTo))}</p>
                 </div>
                 <p class="event__price">
                   €&nbsp;<span class="event__price-value">${basePrice}</span>

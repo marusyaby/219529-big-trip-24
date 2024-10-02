@@ -11,7 +11,10 @@ const eventsModel = new EventsModel();
 const destinationsModel = new DestinationsModel();
 const offersModel = new OffersModel();
 
-const headerPresenter = new HeaderPresenter(headerElement);
+const headerPresenter = new HeaderPresenter({
+  headerContainer: headerElement,
+  eventsModel
+});
 const eventsPresenter = new EventsPresenter({
   eventsContainer: eventsElement,
   eventsModel,

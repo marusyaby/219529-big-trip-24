@@ -2,8 +2,8 @@ export const eventsMock = [
   {
     'id': 'b57dedba-c781-455d-bbb7-71e57754af76',
     'basePrice': 7055,
-    'dateFrom': '2024-10-30T00:31:10.038Z',
-    'dateTo': '2024-11-01T00:56:10.038Z',
+    'dateFrom': '2023-10-01T08:20:10.038Z',
+    'dateTo': '2025-10-02T08:23:10.038Z',
     'destination': '1c961cc1-0d3a-4ce3-8cd5-253860e8b963',
     'isFavorite': false,
     'offers': [
