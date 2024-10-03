@@ -39,9 +39,10 @@ export default class EventsItemFormView extends AbstractView {
   }
 
   #setEventListeners() {
-    this.element
-      .querySelector('.event__rollup-btn')
-      .addEventListener('click', this.#closeEditButtonClickHandler);
+    if (!this.#isNewItem) {
+      this.element.querySelector('.event__rollup-btn').
+        addEventListener('click', this.#closeEditButtonClickHandler);
+    }
 
     this.element
       .querySelector('.event--edit')

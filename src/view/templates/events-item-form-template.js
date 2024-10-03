@@ -24,7 +24,7 @@ const createDestinationsItemOptionTemplate = (city) =>
   `<option value="${city ? city : ''}"></option>`;
 
 const createOfferTemplate = (offer, activeOffers, id) => {
-  const isChecked = activeOffers.includes(offer);
+  const isChecked = activeOffers ? activeOffers.includes(offer) : false;
 
   return `
                     <div class="event__available-offers">
