@@ -41,23 +41,19 @@ export default class EventsPresenter {
     render(this.#eventsList, this.#eventsContainer);
   }
 
-  #renderEventItem({event, destination, activeOffers}) {
+  #renderEventItem(event) {
     this.#eventPresenter = new EventPresenter({
       eventsListContainer: this.#eventsList.element,
       destinationsModel: this.#destinationsModel,
       offersModel: this.#offersModel,
     });
 
-    this.#eventPresenter.init({event, destination, activeOffers});
+    this.#eventPresenter.init(event);
   }
 
   #renderEventItems() {
     this.#events.forEach((event) => {
-      this.#renderEventItem({
-        event,
-        destination: this.#destinationsModel.getDestinationsById(event.destination),
-        activeOffers: this.#offersModel.getOffersById(event.type, event.offers)
-      });
+      this.#renderEventItem(event);
     });
   }
 

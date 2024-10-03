@@ -1,6 +1,17 @@
 import {createEventsItemFormTemplate} from './templates/events-item-form-template.js';
 import AbstractView from '../framework/view/abstract-view.js';
 
+export const BLANK_EVENT = {
+  'id': '',
+  'basePrice': 0,
+  'dateFrom': '',
+  'dateTo': '',
+  'destination': '',
+  'isFavorite': false,
+  'offers': [],
+  'type': 'flight',
+};
+
 export default class EventsItemFormView extends AbstractView {
   #isNewItem = null;
   #event = null;

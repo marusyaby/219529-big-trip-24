@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-import {FilterType} from './view/trip-filters-view.js';
+import {FilterType} from './view/filters-view.js';
 import duration from 'dayjs/plugin/duration';
 dayjs.extend(duration);
 

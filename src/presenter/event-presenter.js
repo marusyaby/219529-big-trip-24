@@ -1,49 +1,47 @@
 import EventsItemView from '../view/events-item-view.js';
-import EventsItemFormView from '../view/events-item-form-view.js';
+import EventsItemFormView, {BLANK_EVENT} from '../view/events-item-form-view.js';
 import {render, replace} from '../framework/render.js';
-
-const BLANK_EVENT = {
-  'id': '',
-  'basePrice': 0,
-  'dateFrom': '',
-  'dateTo': '',
-  'destination': '',
-  'isFavorite': false,
-  'offers': [],
-  'type': 'flight',
-};
 
 export default class EventPresenter {
   #eventsListContainer = null;
   #eventItem = null;
   #eventItemForm = null;
+  #eventsItemNewForm = null;
+
   #destinationsModel = null;
   #offersModel = null;
-  #destinations = [];
-  #eventsItemNewForm = null;
+
+  #event = null;
+  #destination = null;
+  #activeOffers = [];
+  #allDestinations = [];
 
   constructor({eventsListContainer, destinationsModel, offersModel}) {
     this.#eventsListContainer = eventsListContainer;
     this.#destinationsModel = destinationsModel;
     this.#offersModel = offersModel;
-    this.#destinations = [...this.#destinationsModel.destinations];
+    this.#allDestinations = [...this.#destinationsModel.destinations];
   }
 
-  init({event, destination, activeOffers}) {
+  init(event) {
+    this.#event = event;
+    this.#destination = this.#destinationsModel.getDestinationsById(event.destination);
+    this.#activeOffers = this.#offersModel.getOffersById(this.#event.type, this.#event.offers);
+
     this.#eventItem = new EventsItemView({
-      event,
-      destination,
-      activeOffers,
+      event: this.#event,
+      destination: this.#destination,
+      activeOffers: this.#activeOffers,
       onOpenEditButtonClick: this.#handleOpenEditButtonClick,
     });
 
     this.#eventItemForm = new EventsItemFormView({
       isNewItem: false,
-      event,
-      destination,
-      activeOffers,
-      allDestinations: this.#destinations,
-      allOffers: [...this.#offersModel.getOffersByType(event.type)],
+      event: this.#event,
+      destination: this.#destination,
+      activeOffers: this.#activeOffers,
+      allDestinations: this.#allDestinations,
+      allOffers: [...this.#offersModel.getOffersByType(this.#event.type)],
       onCloseEditButtonClick: this.#handleCloseEditButtonClick,
       onFormSubmit: this.#handleFormSubmit,
     });
@@ -88,7 +86,7 @@ export default class EventPresenter {
       event: BLANK_EVENT,
       destination: BLANK_EVENT.destination,
       offers: BLANK_EVENT.offers,
-      allDestinations: this.#destinations,
+      allDestinations: this.#allDestinations,
       allOffers: this.#offersModel.getOffersByType(BLANK_EVENT.type),
     });
 

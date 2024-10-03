@@ -10,7 +10,7 @@ export const FilterType = {
 
 export const DEFAULT_FILTER_NAME = FilterType.EVERYTHING;
 
-export default class TripFiltersView extends AbstractView {
+export default class FiltersView extends AbstractView {
   #filters = null;
   activeFilterType;
   constructor(filters) {
