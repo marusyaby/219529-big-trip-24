@@ -2,6 +2,11 @@ import EventsItemView from '../view/events-item-view.js';
 import EventsItemFormView, {BLANK_EVENT} from '../view/events-item-form-view.js';
 import {remove, render, replace} from '../framework/render.js';
 
+const Mode = {
+  VIEW_EVENT: 'VIEW_EVENT',
+  EDIT_EVENT: 'EDIT_EVENT'
+};
+
 export default class EventPresenter {
   #eventsListContainer = null;
   #eventItem = null;
@@ -17,13 +22,16 @@ export default class EventPresenter {
   #allDestinations = [];
 
   #handleEventItemChange = null;
+  #mode = Mode.VIEW_EVENT;
+  #handleModeChange = null;
 
-  constructor({eventsListContainer, destinationsModel, offersModel, onEventItemChange}) {
+  constructor({eventsListContainer, destinationsModel, offersModel, onEventItemChange, onModeChange}) {
     this.#eventsListContainer = eventsListContainer;
     this.#destinationsModel = destinationsModel;
     this.#offersModel = offersModel;
     this.#allDestinations = [...this.#destinationsModel.destinations];
     this.#handleEventItemChange = onEventItemChange;
+    this.#handleModeChange = onModeChange;
   }
 
   init(event) {
@@ -58,10 +66,10 @@ export default class EventPresenter {
       return;
     }
 
-    if (this.#eventsListContainer.contains(previousEventItem.element)) {
+    if (this.#mode === Mode.VIEW_EVENT) {
       replace(this.#eventItem, previousEventItem);
     }
-    if (this.#eventsListContainer.contains(previousEventItemForm.element)) {
+    if (this.#mode === Mode.EDIT_EVENT) {
       replace(this.#eventItemForm, previousEventItemForm);
     }
 
@@ -74,12 +82,23 @@ export default class EventPresenter {
     remove(this.#eventItemForm);
   }
 
+  resetView() {
+    if (this.#mode !== Mode.VIEW_EVENT) {
+      this.#replaceFormToEvent();
+    }
+  }
+
   #replaceEventToForm() {
     replace(this.#eventItemForm, this.#eventItem);
+    document.addEventListener('keydown', this.#escKeyDownHandler);
+    this.#handleModeChange();
+    this.#mode = Mode.EDIT_EVENT;
   }
 
   #replaceFormToEvent() {
     replace(this.#eventItem, this.#eventItemForm);
+    document.removeEventListener('keydown', this.#escKeyDownHandler);
+    this.#mode = Mode.VIEW_EVENT;
   }
 
   #renderEventItemNewForm() {
@@ -97,18 +116,16 @@ export default class EventPresenter {
 
   #handleOpenFormClick = () => {
     this.#replaceEventToForm();
-    document.addEventListener('keydown', this.#escKeyDownHandler);
   };
 
   #handleCloseFormClick = () => {
     this.#replaceFormToEvent();
-    document.removeEventListener('keydown', this.#escKeyDownHandler);
+
   };
 
   #handleFormSubmit = (event) => {
     this.#handleEventItemChange(event);
     this.#replaceFormToEvent();
-    document.removeEventListener('keydown', this.#escKeyDownHandler);
   };
 
   #handleFavoriteClick = () => {

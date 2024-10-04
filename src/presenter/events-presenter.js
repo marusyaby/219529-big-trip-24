@@ -49,6 +49,7 @@ export default class EventsPresenter {
       destinationsModel: this.#destinationsModel,
       offersModel: this.#offersModel,
       onEventItemChange: this.#handleEventItemChange,
+      onModeChange: this.#handleModeChange,
     });
 
     this.#eventPresenter.init(event);
@@ -69,4 +70,9 @@ export default class EventsPresenter {
     this.#events = updateItem(updatedEvent, this.#events);
     this.#eventPresenters.get(updatedEvent.id).init(updatedEvent);
   };
+
+  #handleModeChange = () => {
+    this.#eventPresenters.forEach((presenter) =>
+      presenter.resetView());
+  } ;
 }
