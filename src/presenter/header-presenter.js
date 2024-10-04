@@ -1,19 +1,27 @@
 import {render} from '../framework/render.js';
 import TripInfoView from '../view/trip-info-view.js';
-import FiltersView, {DEFAULT_FILTER_NAME} from '../view/filters-view.js';
+import FiltersView from '../view/filters-view.js';
 import NewEventButtonView from '../view/new-event-button-view.js';
-import {generateFilters} from '../utils.js';
+import {filterEvents, isFiltered} from '../utils.js';
 
 export default class HeaderPresenter {
   #eventsModel = null;
   #events = [];
-  #activeFilterName = null;
+  #filters = [];
 
   constructor({headerContainer, eventsModel}) {
     this.headerContainer = headerContainer;
     this.#eventsModel = eventsModel;
     this.#events = [...this.#eventsModel.events];
-    this.#activeFilterName = DEFAULT_FILTER_NAME;
+
+    this.#filters = Object.entries(isFiltered).map(
+      ([filterType, isFilterClickable], index) => ({
+        name: filterType,
+        isClickable: isFilterClickable(this.#events),
+        isActive: index === 0,
+        filteredEvents: filterEvents[filterType](this.#events),
+      }),
+    );
   }
 
   init() {
@@ -29,8 +37,9 @@ export default class HeaderPresenter {
   }
 
   #renderFilters() {
-    const filters = generateFilters(this.#events, this.#activeFilterName);
-    render(new FiltersView(filters), this.headerContainer);
+    render(new FiltersView({
+      items: this.#filters,
+    }), this.headerContainer);
   }
 
   #renderNewEventButton() {

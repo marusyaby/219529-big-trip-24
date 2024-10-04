@@ -45,29 +45,19 @@ const isFutureEvent = (event) => dayjs(event.dateFrom) > currentDate;
 const isPastEvent = (event) => dayjs(event.dateTo) < currentDate;
 const isPresentEvent = (event) => dayjs(event.dateTo) >= currentDate && dayjs(event.dateFrom) <= currentDate;
 
-const isFiltered = {
+export const isFiltered = {
   [FilterType.EVERYTHING]: (events) => events.length > 0,
   [FilterType.FUTURE]: (events) => events.some((event) => isFutureEvent(event)),
   [FilterType.PRESENT]: (events) => events.some((event) => isPresentEvent(event)),
   [FilterType.PAST]: (events) => events.some((event) => isPastEvent(event)),
 };
 
-const filteredEvents = {
+export const filterEvents = {
   [FilterType.EVERYTHING]: (events) => events,
   [FilterType.FUTURE]: (events) => events.filter((event) => isFutureEvent(event)),
   [FilterType.PRESENT]: (events) => events.filter((event) => isPresentEvent(event)),
   [FilterType.PAST]: (events) => events.filter((event) => isPastEvent(event)),
 };
-
-export const generateFilters = (events, activeFilterName) =>
-  Object.entries(isFiltered).map(
-    ([filterName, isFilterClickable]) => ({
-      name: filterName,
-      isClickable: isFilterClickable(events),
-      isActive: filterName === activeFilterName,
-      filteredEvents: filteredEvents[filterName](events),
-    }),
-  );
 
 export const updateItem = (updatedItem, items) =>
   items.map((item) => item.id === updatedItem.id ? updatedItem : item);
