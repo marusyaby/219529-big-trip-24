@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-import {FilterType} from './view/trip-filters-view.js';
+import {FilterType} from './view/filters-view.js';
 import duration from 'dayjs/plugin/duration';
 dayjs.extend(duration);
 
@@ -69,3 +69,5 @@ export const generateFilters = (events, activeFilterName) =>
     }),
   );
 
+export const updateItem = (updatedItem, items) =>
+  items.map((item) => item.id === updatedItem.id ? updatedItem : item);

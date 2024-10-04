@@ -1,6 +1,17 @@
 import {createEventsItemFormTemplate} from './templates/events-item-form-template.js';
 import AbstractView from '../framework/view/abstract-view.js';
 
+export const BLANK_EVENT = {
+  'id': '',
+  'basePrice': 0,
+  'dateFrom': '',
+  'dateTo': '',
+  'destination': '',
+  'isFavorite': false,
+  'offers': [],
+  'type': 'flight',
+};
+
 export default class EventsItemFormView extends AbstractView {
   #isNewItem = null;
   #event = null;
@@ -8,8 +19,8 @@ export default class EventsItemFormView extends AbstractView {
   #activeOffers = [];
   #allDestinations = [];
   #allOffers = [];
-  #onCloseEditButtonClick = null;
-  #onFormSubmit = null;
+  #handleCloseFormClick = null;
+  #handleFormSubmit = null;
 
   constructor({
     isNewItem,
@@ -18,7 +29,7 @@ export default class EventsItemFormView extends AbstractView {
     activeOffers,
     allDestinations,
     allOffers,
-    onCloseEditButtonClick,
+    onCloseFormClick,
     onFormSubmit,
   }) {
     super();
@@ -28,8 +39,8 @@ export default class EventsItemFormView extends AbstractView {
     this.#activeOffers = activeOffers;
     this.#allDestinations = allDestinations;
     this.#allOffers = allOffers;
-    this.#onCloseEditButtonClick = onCloseEditButtonClick;
-    this.#onFormSubmit = onFormSubmit;
+    this.#handleCloseFormClick = onCloseFormClick;
+    this.#handleFormSubmit = onFormSubmit;
     this.#setEventListeners();
   }
 
@@ -39,22 +50,23 @@ export default class EventsItemFormView extends AbstractView {
   }
 
   #setEventListeners() {
-    this.element
-      .querySelector('.event__rollup-btn')
-      .addEventListener('click', this.#closeEditButtonClickHandler);
+    if (!this.#isNewItem) {
+      this.element.querySelector('.event__rollup-btn').
+        addEventListener('click', this.#closeFormClickHandler);
+    }
 
     this.element
       .querySelector('.event--edit')
       .addEventListener('submit', this.#formSubmitHandler);
   }
 
-  #closeEditButtonClickHandler = (evt) => {
+  #closeFormClickHandler = (evt) => {
     evt.preventDefault(evt);
-    this.#onCloseEditButtonClick();
+    this.#handleCloseFormClick();
   };
 
   #formSubmitHandler = (evt) => {
     evt.preventDefault(evt);
-    this.#onFormSubmit();
+    this.#handleFormSubmit(this.#event);
   };
 }

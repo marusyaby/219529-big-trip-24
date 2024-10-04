@@ -1,4 +1,4 @@
-import {createTripFiltersTemplate} from './templates/trip-filters-template.js';
+import {createFiltersTemplate} from './templates/filters-template.js';
 import AbstractView from '../framework/view/abstract-view.js';
 
 export const FilterType = {
@@ -10,7 +10,7 @@ export const FilterType = {
 
 export const DEFAULT_FILTER_NAME = FilterType.EVERYTHING;
 
-export default class TripFiltersView extends AbstractView {
+export default class FiltersView extends AbstractView {
   #filters = null;
   activeFilterType;
   constructor(filters) {
@@ -19,6 +19,6 @@ export default class TripFiltersView extends AbstractView {
   }
 
   get template() {
-    return createTripFiltersTemplate(this.#filters);
+    return createFiltersTemplate(this.#filters);
   }
 }
