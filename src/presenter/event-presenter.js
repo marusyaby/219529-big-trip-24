@@ -1,6 +1,6 @@
 import EventsItemView from '../view/events-item-view.js';
 import EventsItemFormView, {BLANK_EVENT} from '../view/events-item-form-view.js';
-import {render, replace} from '../framework/render.js';
+import {remove, render, replace} from '../framework/render.js';
 
 export default class EventPresenter {
   #eventsListContainer = null;
@@ -16,11 +16,14 @@ export default class EventPresenter {
   #activeOffers = [];
   #allDestinations = [];
 
-  constructor({eventsListContainer, destinationsModel, offersModel}) {
+  #handleEventItemChange = null;
+
+  constructor({eventsListContainer, destinationsModel, offersModel, onEventItemChange}) {
     this.#eventsListContainer = eventsListContainer;
     this.#destinationsModel = destinationsModel;
     this.#offersModel = offersModel;
     this.#allDestinations = [...this.#destinationsModel.destinations];
+    this.#handleEventItemChange = onEventItemChange;
   }
 
   init(event) {
@@ -28,11 +31,15 @@ export default class EventPresenter {
     this.#destination = this.#destinationsModel.getDestinationsById(event.destination);
     this.#activeOffers = this.#offersModel.getOffersById(this.#event.type, this.#event.offers);
 
+    const previousEventItem = this.#eventItem;
+    const previousEventItemForm = this.#eventItemForm;
+
     this.#eventItem = new EventsItemView({
       event: this.#event,
       destination: this.#destination,
       activeOffers: this.#activeOffers,
-      onOpenEditButtonClick: this.#handleOpenEditButtonClick,
+      onOpenFormClick: this.#handleOpenFormClick,
+      onFavoriteClick: this.#handleFavoriteClick,
     });
 
     this.#eventItemForm = new EventsItemFormView({
@@ -42,20 +49,30 @@ export default class EventPresenter {
       activeOffers: this.#activeOffers,
       allDestinations: this.#allDestinations,
       allOffers: [...this.#offersModel.getOffersByType(this.#event.type)],
-      onCloseEditButtonClick: this.#handleCloseEditButtonClick,
+      onCloseFormClick: this.#handleCloseFormClick,
       onFormSubmit: this.#handleFormSubmit,
     });
 
-    render(this.#eventItem, this.#eventsListContainer);
+    if (!previousEventItem || !previousEventItemForm) {
+      render(this.#eventItem, this.#eventsListContainer);
+      return;
+    }
+
+    if (this.#eventsListContainer.contains(previousEventItem.element)) {
+      replace(this.#eventItem, previousEventItem);
+    }
+    if (this.#eventsListContainer.contains(previousEventItemForm.element)) {
+      replace(this.#eventItemForm, previousEventItemForm);
+    }
+
+    remove(previousEventItem);
+    remove(previousEventItemForm);
   }
 
-  #escKeyDownHandler = (evt) => {
-    if (evt.key === 'Escape') {
-      evt.preventDefault();
-      this.#replaceFormToEvent();
-      document.removeEventListener('keydown', this.#escKeyDownHandler);
-    }
-  };
+  destroy() {
+    remove(this.#eventItem);
+    remove(this.#eventItemForm);
+  }
 
   #replaceEventToForm() {
     replace(this.#eventItemForm, this.#eventItem);
@@ -64,21 +81,6 @@ export default class EventPresenter {
   #replaceFormToEvent() {
     replace(this.#eventItem, this.#eventItemForm);
   }
-
-  #handleOpenEditButtonClick = () => {
-    this.#replaceEventToForm();
-    document.addEventListener('keydown', this.#escKeyDownHandler);
-  };
-
-  #handleCloseEditButtonClick = () => {
-    this.#replaceFormToEvent();
-    document.removeEventListener('keydown', this.#escKeyDownHandler);
-  };
-
-  #handleFormSubmit = () => {
-    this.#replaceFormToEvent();
-    document.removeEventListener('keydown', this.#escKeyDownHandler);
-  };
 
   #renderEventItemNewForm() {
     this.#eventsItemNewForm = new EventsItemFormView({
@@ -92,4 +94,35 @@ export default class EventPresenter {
 
     render(this.#eventsItemNewForm, this.#eventsListContainer);
   }
+
+  #handleOpenFormClick = () => {
+    this.#replaceEventToForm();
+    document.addEventListener('keydown', this.#escKeyDownHandler);
+  };
+
+  #handleCloseFormClick = () => {
+    this.#replaceFormToEvent();
+    document.removeEventListener('keydown', this.#escKeyDownHandler);
+  };
+
+  #handleFormSubmit = (event) => {
+    this.#handleEventItemChange(event);
+    this.#replaceFormToEvent();
+    document.removeEventListener('keydown', this.#escKeyDownHandler);
+  };
+
+  #handleFavoriteClick = () => {
+    this.#handleEventItemChange({
+      ...this.#event,
+      isFavorite: !this.#event.isFavorite
+    });
+  };
+
+  #escKeyDownHandler = (evt) => {
+    if (evt.key === 'Escape') {
+      evt.preventDefault();
+      this.#replaceFormToEvent();
+      document.removeEventListener('keydown', this.#escKeyDownHandler);
+    }
+  };
 }

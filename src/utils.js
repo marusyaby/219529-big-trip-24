@@ -69,3 +69,5 @@ export const generateFilters = (events, activeFilterName) =>
     }),
   );
 
+export const updateItem = (updatedItem, items) =>
+  items.map((item) => item.id === updatedItem.id ? updatedItem : item);

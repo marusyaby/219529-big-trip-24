@@ -3,6 +3,7 @@ import {render} from '../framework/render.js';
 import EventsListView from '../view/events-list-view.js';
 import EventsMessageView, {EventsMessage} from '../view/events-message-view.js';
 import EventPresenter from './event-presenter.js';
+import {updateItem} from '../utils.js';
 
 export default class EventsPresenter {
   #eventsContainer = null;
@@ -12,6 +13,7 @@ export default class EventsPresenter {
   #events = [];
   #eventsList = null;
   #eventPresenter = null;
+  #eventPresenters = new Map();
 
   constructor({eventsContainer, eventsModel, destinationsModel, offersModel}) {
     this.#eventsContainer = eventsContainer;
@@ -46,9 +48,11 @@ export default class EventsPresenter {
       eventsListContainer: this.#eventsList.element,
       destinationsModel: this.#destinationsModel,
       offersModel: this.#offersModel,
+      onEventItemChange: this.#handleEventItemChange,
     });
 
     this.#eventPresenter.init(event);
+    this.#eventPresenters.set(event.id, this.#eventPresenter);
   }
 
   #renderEventItems() {
@@ -60,4 +64,9 @@ export default class EventsPresenter {
   #renderEventsMessage(message) {
     render(new EventsMessageView(message), this.#eventsContainer);
   }
+
+  #handleEventItemChange = (updatedEvent) => {
+    this.#events = updateItem(updatedEvent, this.#events);
+    this.#eventPresenters.get(updatedEvent.id).init(updatedEvent);
+  };
 }

@@ -5,14 +5,16 @@ export default class EventsItemView extends AbstractView {
   #event = null;
   #destination = null;
   #activeOffers = [];
-  #onOpenEditButtonClick = null;
+  #handleOpenFormClick = null;
+  #handleFavoriteClick = null;
 
-  constructor({event, destination, onOpenEditButtonClick, activeOffers}) {
+  constructor({event, destination, activeOffers, onOpenFormClick, onFavoriteClick}) {
     super();
     this.#event = event;
     this.#destination = destination;
     this.#activeOffers = activeOffers;
-    this.#onOpenEditButtonClick = onOpenEditButtonClick;
+    this.#handleOpenFormClick = onOpenFormClick;
+    this.#handleFavoriteClick = onFavoriteClick;
     this.#setEventListeners();
   }
 
@@ -23,11 +25,20 @@ export default class EventsItemView extends AbstractView {
   #setEventListeners() {
     this.element
       .querySelector('.event__rollup-btn')
-      .addEventListener('click', this.#openEditButtonClickHandler);
+      .addEventListener('click', this.#openFormClickHandler);
+
+    this.element
+      .querySelector('.event__favorite-icon')
+      .addEventListener('click', this.#favoriteClickHandler);
   }
 
-  #openEditButtonClickHandler = (evt) => {
-    evt.preventDefault(evt);
-    this.#onOpenEditButtonClick();
+  #openFormClickHandler = (evt) => {
+    evt.preventDefault();
+    this.#handleOpenFormClick();
+  };
+
+  #favoriteClickHandler = (evt) => {
+    evt.preventDefault();
+    this.#handleFavoriteClick();
   };
 }
