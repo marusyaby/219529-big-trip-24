@@ -101,7 +101,7 @@ export const createEventsItemFormTemplate = (isNewEvent, event, destination, act
     createDestinationsItemOptionTemplate(item.name))
     .join('');
   const eventStartTime = dayjs(dateFrom).isValid() ? formatDate(dateFrom, Format.FULL_DATE) : '';
-  const eventEndTime = dayjs(dateTo).isValid() ? formatDate(dateFrom, Format.FULL_DATE) : '';
+  const eventEndTime = dayjs(dateTo).isValid() ? formatDate(dateTo, Format.FULL_DATE) : '';
 
   return `
             <li class="trip-events__item">

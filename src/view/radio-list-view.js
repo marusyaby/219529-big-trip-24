@@ -18,6 +18,5 @@ export default class RadioListView extends AbstractView {
     if (this._handleItemChange) {
       this._handleItemChange(evt.target.dataset.item);
     }
-    // this._handleItemChange?.(evt.target.dataset.item);
   };
 }
