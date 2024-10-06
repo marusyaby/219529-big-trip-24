@@ -18,7 +18,7 @@ export default class EventPresenter {
 
   #event = null;
   #destination = null;
-  #activeOffers = [];
+  #selectedOffers = [];
   #allDestinations = [];
 
   #handleEventItemChange = null;
@@ -37,7 +37,7 @@ export default class EventPresenter {
   init(event) {
     this.#event = event;
     this.#destination = this.#destinationsModel.getDestinationsById(event.destination);
-    this.#activeOffers = this.#offersModel.getOffersById(this.#event.type, this.#event.offers);
+    this.#selectedOffers = this.#offersModel.getOffersById(this.#event.type, this.#event.offers);
 
     const previousEventItem = this.#eventItem;
     const previousEventItemForm = this.#eventItemForm;
@@ -45,7 +45,7 @@ export default class EventPresenter {
     this.#eventItem = new EventsItemView({
       event: this.#event,
       destination: this.#destination,
-      activeOffers: this.#activeOffers,
+      selectedOffers: this.#selectedOffers,
       onOpenFormClick: this.#handleOpenFormClick,
       onFavoriteClick: this.#handleFavoriteClick,
     });
@@ -54,9 +54,9 @@ export default class EventPresenter {
       isNewItem: false,
       event: this.#event,
       destination: this.#destination,
-      activeOffers: this.#activeOffers,
+      selectedOffers: this.#selectedOffers,
       allDestinations: this.#allDestinations,
-      allOffers: [...this.#offersModel.getOffersByType(this.#event.type)],
+      offersByType: [...this.#offersModel.getOffersByType(this.#event.type)],
       onCloseFormClick: this.#handleCloseFormClick,
       onFormSubmit: this.#handleFormSubmit,
     });
@@ -106,9 +106,9 @@ export default class EventPresenter {
       isNewItem: true,
       event: BLANK_EVENT,
       destination: BLANK_EVENT.destination,
-      offers: BLANK_EVENT.offers,
+      selectedOffers: BLANK_EVENT.offers,
       allDestinations: this.#allDestinations,
-      allOffers: this.#offersModel.getOffersByType(BLANK_EVENT.type),
+      offersByType: this.#offersModel.getOffersByType(BLANK_EVENT.type),
     });
 
     render(this.#eventsItemNewForm, this.#eventsListContainer);

@@ -7,15 +7,17 @@ import {generateSortTypes, sortEvents, updateItem} from '../utils.js';
 
 export default class EventsPresenter {
   #eventsContainer = null;
+
   #eventsModel = null;
   #destinationsModel = null;
   #offersModel = null;
+
   #events = [];
   #eventsList = null;
   #eventPresenter = null;
   #eventPresenters = new Map();
-  #sortTypes = [];
 
+  #sortTypes = [];
   #defaultSortType = SortType.DAY;
   #currentSortType = this.#defaultSortType;
 

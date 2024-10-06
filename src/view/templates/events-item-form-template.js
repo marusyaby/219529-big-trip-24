@@ -23,8 +23,8 @@ const createEventTypeItem = (value, isChecked) => `
 const createDestinationsItemOptionTemplate = (city) =>
   `<option value="${city ? city : ''}"></option>`;
 
-const createOfferTemplate = (offer, activeOffers, id) => {
-  const isChecked = activeOffers ? activeOffers.includes(offer) : false;
+const createOfferTemplate = (offer, selectedOffers, id) => {
+  const isChecked = selectedOffers.includes(offer);
 
   return `
                     <div class="event__available-offers">
@@ -39,8 +39,8 @@ const createOfferTemplate = (offer, activeOffers, id) => {
 `;
 };
 
-const createOffersTemplate = (activeOffers, allOffers, id) => {
-  const offers = allOffers.map((offer) => createOfferTemplate(offer, activeOffers, id)).join('');
+const createOffersTemplate = (selectedOffers, offersByType, id) => {
+  const offers = offersByType.map((offer) => createOfferTemplate(offer, selectedOffers, id)).join('');
   return `
     <section class="event__section  event__section--offers">
                     <h3 class="event__section-title  event__section-title--offers">Offers</h3>
@@ -79,9 +79,9 @@ const createDestinationTemplate = (destination) =>
 
   </section>`;
 
-const createFormDetailsTemplate = (destination, activeOffers, allOffers, id) =>
+const createFormDetailsTemplate = (destination, selectedOffers, offersByType, id) =>
   `<section class="event__details">
-${allOffers.length > 0 ? createOffersTemplate(activeOffers, allOffers, id) : ''}
+${offersByType.length > 0 ? createOffersTemplate(selectedOffers, offersByType, id) : ''}
 ${!!destination.description && !!destination.pictures ? createDestinationTemplate(destination) : ''}
 </section>`;
 
@@ -91,7 +91,7 @@ const createRollupButtonTemplate = () => `
                   </button>
 `;
 
-export const createEventsItemFormTemplate = (isNewEvent, event, destination, activeOffers, allDestinations, allOffers) => {
+export const createEventsItemFormTemplate = (isNewEvent, event, destination, selectedOffers, allDestinations, offersByType) => {
   const {id, type, dateFrom, dateTo, basePrice} = event;
   const {name} = destination;
   const eventTypeItemsList = EVENT_TYPES.map((value) =>
@@ -159,7 +159,7 @@ export const createEventsItemFormTemplate = (isNewEvent, event, destination, act
 
                 </header>
 
-                ${createFormDetailsTemplate(destination, activeOffers, allOffers, id)}
+                ${createFormDetailsTemplate(destination, selectedOffers, offersByType, id)}
 
               </form>
             </li>
