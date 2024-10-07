@@ -16,7 +16,7 @@ export const eventsMock = [
     'id': 'f668a3ca-87b2-4a0f-b1d7-04027a99d152',
     'basePrice': 107,
     'dateFrom': '2024-11-02T21:39:10.038Z',
-    'dateTo': '2024-11-04T14:31:10.038Z',
+    'dateTo': '2024-12-04T14:31:10.038Z',
     'destination': '8c4f7526-3656-4eee-b4e3-2a3aa707958f',
     'isFavorite': true,
     'offers': [
@@ -29,7 +29,7 @@ export const eventsMock = [
   {
     'id': 'c5eaffc6-fad4-49e9-a16d-363696691551',
     'basePrice': 6334,
-    'dateFrom': '2024-11-05T14:13:10.038Z',
+    'dateFrom': '2024-09-05T14:13:10.038Z',
     'dateTo': '2024-11-06T23:55:10.038Z',
     'destination': '1c961cc1-0d3a-4ce3-8cd5-253860e8b963',
     'isFavorite': true,
@@ -40,7 +40,7 @@ export const eventsMock = [
     'id': '45127fe5-f29c-4c82-aee5-b51c8ef0db39',
     'basePrice': 7157,
     'dateFrom': '2024-11-08T15:36:10.038Z',
-    'dateTo': '2024-11-09T04:02:10.038Z',
+    'dateTo': '2024-12-09T04:02:10.038Z',
     'destination': 'dc59d072-bf40-4839-8d9f-9e11d5dd669b',
     'isFavorite': false,
     'offers': [
@@ -51,7 +51,7 @@ export const eventsMock = [
   {
     'id': 'ab68c6a1-cdfb-429b-9649-d4b4636f7c86',
     'basePrice': 4590,
-    'dateFrom': '2024-11-11T03:50:10.038Z',
+    'dateFrom': '2024-08-11T03:50:10.038Z',
     'dateTo': '2024-11-12T01:26:10.038Z',
     'destination': '3125fc25-1367-46d7-a897-5a316d23fbce',
     'isFavorite': false,
@@ -75,7 +75,7 @@ export const eventsMock = [
     'id': 'a6cfedb6-bca4-409f-99a1-3f14ce9a9495',
     'basePrice': 7053,
     'dateFrom': '2024-11-14T09:22:10.038Z',
-    'dateTo': '2024-11-14T20:50:10.038Z',
+    'dateTo': '2024-11-14T09:50:10.038Z',
     'destination': '1c961cc1-0d3a-4ce3-8cd5-253860e8b963',
     'isFavorite': false,
     'offers': [
@@ -87,7 +87,7 @@ export const eventsMock = [
     'id': '0ce3a012-e554-4afe-ba12-56a8f7120ab1',
     'basePrice': 4726,
     'dateFrom': '2024-11-16T15:13:10.038Z',
-    'dateTo': '2024-11-18T01:14:10.038Z',
+    'dateTo': '2024-11-16T16:14:10.038Z',
     'destination': '944405b7-a7c1-4021-a3bd-90445f1fde11',
     'isFavorite': true,
     'offers': [

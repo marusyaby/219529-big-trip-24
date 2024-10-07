@@ -1,24 +1,14 @@
-export const SORT_VALUES = [
-  'day',
-  'event',
-  'time',
-  'price',
-  'offers'
-];
-
-const activeSortItem = SORT_VALUES[0];
-const disabledSortItems = [SORT_VALUES[1], SORT_VALUES[4]];
-
-const createEventsSortItemTemplate = (value, isChecked, isDisabled) => `
-            <div class="trip-sort__item  trip-sort__item--${value}">
-              <input id="sort-${value}" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort" value="sort-${value}" ${isDisabled ? 'disabled' : ''} ${isChecked ? 'checked' : ''}>
-              <label class="trip-sort__btn" for="sort-${value}">${value}</label>
+const createEventsSortItemTemplate = (type, isActive, isClickable) => `
+            <div class="trip-sort__item  trip-sort__item--${type}">
+              <input id="sort-${type}" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort"
+              value="sort-${type}" ${isClickable ? '' : 'disabled'} ${isActive ? 'checked' : ''} data-item="${type}">
+              <label class="trip-sort__btn" for="sort-${type}">${type}</label>
             </div>
 `;
 
-export const createEventsSortListTemplate = () => {
-  const eventSortItems = SORT_VALUES.map((value) =>
-    createEventsSortItemTemplate(value, value === activeSortItem, disabledSortItems.includes(value)))
+export const createEventsSortListTemplate = (sortTypes) => {
+  const eventSortItems = sortTypes.map((sortType) =>
+    createEventsSortItemTemplate(sortType.type, sortType.isActive, sortType.isClickable))
     .join('');
 
   return `

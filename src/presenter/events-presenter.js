@@ -1,19 +1,25 @@
-import EventsSortView from '../view/events-sort-view.js';
+import EventsSortView, {SortType} from '../view/events-sort-view.js';
 import {render} from '../framework/render.js';
 import EventsListView from '../view/events-list-view.js';
 import EventsMessageView, {EventsMessage} from '../view/events-message-view.js';
 import EventPresenter from './event-presenter.js';
-import {updateItem} from '../utils.js';
+import {generateSortTypes, sortEvents, updateItem} from '../utils.js';
 
 export default class EventsPresenter {
   #eventsContainer = null;
+
   #eventsModel = null;
   #destinationsModel = null;
   #offersModel = null;
+
   #events = [];
   #eventsList = null;
   #eventPresenter = null;
   #eventPresenters = new Map();
+
+  #sortTypes = [];
+  #defaultSortType = SortType.DAY;
+  #currentSortType = this.#defaultSortType;
 
   constructor({eventsContainer, eventsModel, destinationsModel, offersModel}) {
     this.#eventsContainer = eventsContainer;
@@ -35,7 +41,23 @@ export default class EventsPresenter {
   }
 
   #renderEventsSort() {
-    render(new EventsSortView, this.#eventsContainer);
+    this.#sortTypes = generateSortTypes(this.#defaultSortType);
+
+    render(new EventsSortView({
+      items: this.#sortTypes,
+      onItemChange: this.#handleSortTypeChange,
+    }), this.#eventsContainer);
+  }
+
+  #sortEvents(sortType) {
+    this.#currentSortType = sortType;
+    this.#events = sortEvents[sortType](this.#events);
+  }
+
+  #clearEvents() {
+    this.#eventPresenters.forEach((presenter) =>
+      presenter.destroy());
+    this.#eventPresenters.clear();
   }
 
   #renderEventsList() {
@@ -57,6 +79,7 @@ export default class EventsPresenter {
   }
 
   #renderEventItems() {
+    this.#sortEvents(this.#currentSortType);
     this.#events.forEach((event) => {
       this.#renderEventItem(event);
     });
@@ -74,5 +97,11 @@ export default class EventsPresenter {
   #handleModeChange = () => {
     this.#eventPresenters.forEach((presenter) =>
       presenter.resetView());
-  } ;
+  };
+
+  #handleSortTypeChange = (sortType) => {
+    this.#sortEvents(sortType);
+    this.#clearEvents();
+    this.#renderEventItems();
+  };
 }

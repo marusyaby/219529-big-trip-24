@@ -1,15 +1,14 @@
-const createFilterTemplate = (type, isActive, isVisible) => `
+const createFilterTemplate = (type, isActive, isClickable) => `
     <div class="trip-filters__filter">
                   <input id="filter-${type}" class="trip-filters__filter-input  visually-hidden" type="radio" name="trip-filter" value="${type}" ${isActive ?
-  'checked' :
-  ''} ${isVisible ? '' : 'disabled'}>
+  'checked' : ''} ${isClickable ? '' : 'disabled'} data-item="${type}">
                   <label class="trip-filters__filter-label" for="filter-${type}">${type}</label>
                 </div>
   `;
 
 export const createFiltersTemplate = (filters) => {
   const tripFilterElements = filters.map((filter) =>
-    createFilterTemplate(filter.name, filter.isActive, filter.isClickable)).
+    createFilterTemplate(filter.type, filter.isActive, filter.isClickable)).
     join('');
 
   return `

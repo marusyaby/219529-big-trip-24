@@ -1,5 +1,5 @@
 import {createFiltersTemplate} from './templates/filters-template.js';
-import AbstractView from '../framework/view/abstract-view.js';
+import RadioListView from './radio-list-view.js';
 
 export const FilterType = {
   EVERYTHING: 'everything',
@@ -8,17 +8,9 @@ export const FilterType = {
   PAST: 'past',
 };
 
-export const DEFAULT_FILTER_NAME = FilterType.EVERYTHING;
-
-export default class FiltersView extends AbstractView {
-  #filters = null;
-  activeFilterType;
-  constructor(filters) {
-    super();
-    this.#filters = filters;
-  }
+export default class FiltersView extends RadioListView {
 
   get template() {
-    return createFiltersTemplate(this.#filters);
+    return createFiltersTemplate(this._items);
   }
 }
