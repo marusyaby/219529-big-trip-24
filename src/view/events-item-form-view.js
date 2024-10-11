@@ -24,16 +24,16 @@ export default class EventsItemFormView extends AbstractStatefulView {
   #getDestinationByName = null;
 
   constructor({
-                isNewItem,
-                event,
-                destination,
-                allDestinations,
-                offersByType,
-                onCloseFormClick,
-                onFormSubmit,
-                getEventItemOffersByType,
-                getDestinationByName,
-              }) {
+    isNewItem,
+    event,
+    destination,
+    allDestinations,
+    offersByType,
+    onCloseFormClick,
+    onFormSubmit,
+    getEventItemOffersByType,
+    getDestinationByName,
+  }) {
     super();
     this.#isNewItem = isNewItem;
     this.#initialEvent = event;
@@ -98,7 +98,7 @@ export default class EventsItemFormView extends AbstractStatefulView {
     });
 
     this.#validateForm();
-  }
+  };
 
   #eventDestinationChangeHandler = (evt) => {
     evt.preventDefault();
@@ -110,7 +110,7 @@ export default class EventsItemFormView extends AbstractStatefulView {
     });
 
     this.#validateForm();
-  }
+  };
 
   #eventPriceInputHandler = (evt) => {
     evt.preventDefault();
@@ -121,14 +121,14 @@ export default class EventsItemFormView extends AbstractStatefulView {
     });
 
     this.#validateForm();
-  }
+  };
 
   #offerChangeHandler = () => {
     const selectedOffers = Array.from(this.element.querySelectorAll('.event__offer-checkbox:checked'));
 
     this._setState({
-        ...this._state.event,
-        offers: selectedOffers.map((offerCheckboxElement) => offerCheckboxElement.id)
+      ...this._state.event,
+      offers: selectedOffers.map((offerCheckboxElement) => offerCheckboxElement.id)
     });
   };
 
@@ -139,20 +139,20 @@ export default class EventsItemFormView extends AbstractStatefulView {
     }
 
     this.element
-    .querySelector('.event--edit')
-    .addEventListener('submit', this.#formSubmitHandler);
+      .querySelector('.event--edit')
+      .addEventListener('submit', this.#formSubmitHandler);
 
     this.element
-    .querySelector('.event__type-group')
-    .addEventListener('change', this.#eventTypeChangeHandler);
+      .querySelector('.event__type-group')
+      .addEventListener('change', this.#eventTypeChangeHandler);
 
     this.element
-    .querySelector('.event__input--destination')
-    .addEventListener('change', this.#eventDestinationChangeHandler);
+      .querySelector('.event__input--destination')
+      .addEventListener('change', this.#eventDestinationChangeHandler);
 
     this.element
-    .querySelector('.event__input--price')
-    .addEventListener('change', this.#eventPriceInputHandler);
+      .querySelector('.event__input--price')
+      .addEventListener('change', this.#eventPriceInputHandler);
 
     this.element
       .querySelector('.event__available-offers')
