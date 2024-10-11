@@ -26,9 +26,7 @@ const createDestinationsItemOptionTemplate = (city) =>
 const createOfferTemplate = (offer, selectedOffers) => {
   const isChecked = selectedOffers.includes(offer.id);
 
-  return `
-                    <div class="event__available-offers">
-                      <div class="event__offer-selector">
+  return `<div class="event__offer-selector">
                         <input class="event__offer-checkbox  visually-hidden" id="${offer.id}" type="checkbox" name="${offer.title}" ${isChecked ? 'checked' : ''}>
                         <label class="event__offer-label" for="${offer.id}">
                           <span class="event__offer-title">${offer.title}</span>
@@ -40,13 +38,15 @@ const createOfferTemplate = (offer, selectedOffers) => {
 };
 
 const createOffersTemplate = (selectedOffers, offersByType) => {
-  const offers = offersByType.map((offer) => createOfferTemplate(offer, selectedOffers)).join('');
+  const offersSelectors = offersByType.map((offer) => createOfferTemplate(offer, selectedOffers)).join('');
   return `
     <section class="event__section  event__section--offers">
                     <h3 class="event__section-title  event__section-title--offers">Offers</h3>
+                        <div class="event__available-offers">
 
-                    ${offers}
+                    ${offersSelectors}
 
+                        </div>
                     </div>
                   </section>
 `;
@@ -160,7 +160,7 @@ export const createEventsItemFormTemplate = (isNewEvent, event, allDestinations)
                     <input class="event__input  event__input--price" id="event-price-${id}" name="event-price" value="${basePrice}" required min="1" max="100000" step="1"
 
                     pattern="\\d+" type="number" autocomplete="off">
-                    <!--                    onkeypress="return /^-?[0-9]*$/.test(this.value+event.key)"-->
+
                   </div>
 
                   <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>

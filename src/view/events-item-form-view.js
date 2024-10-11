@@ -52,6 +52,33 @@ export default class EventsItemFormView extends AbstractStatefulView {
     return createEventsItemFormTemplate(this.#isNewItem, this._state, this.#allDestinations);
   }
 
+  _restoreHandlers() {
+    if (!this.#isNewItem) {
+      this.element.querySelector('.event__rollup-btn').
+        addEventListener('click', this.#closeFormClickHandler);
+    }
+
+    this.element
+    .querySelector('.event--edit')
+    .addEventListener('submit', this.#formSubmitHandler);
+
+    this.element
+    .querySelector('.event__type-group')
+    .addEventListener('change', this.#eventTypeChangeHandler);
+
+    this.element
+    .querySelector('.event__input--destination')
+    .addEventListener('change', this.#eventDestinationChangeHandler);
+
+    this.element
+    .querySelector('.event__input--price')
+    .addEventListener('change', this.#eventPriceChangeHandler);
+
+    this.element
+    .querySelector('.event__available-offers')
+    ?.addEventListener('change', this.#offerChangeHandler);
+  }
+
   reset(event) {
     this.updateElement(
       EventsItemFormView.parseEventToState(event, this.#destination, this.#offersByType, this.#allDestinations)
@@ -59,7 +86,10 @@ export default class EventsItemFormView extends AbstractStatefulView {
   }
 
   #validateForm () {
-    const isPriceInvalid = !Number.isSafeInteger(this._state.basePrice) || this._state.basePrice <= 0;
+    const isPriceInvalid =
+      !Number.isSafeInteger(this._state.basePrice) ||
+      this._state.basePrice <= 0 ||
+      this._state.basePrice > 100000;
     const isDestinationInvalid = !this._state.destination;
 
     if (isPriceInvalid) {
@@ -112,7 +142,7 @@ export default class EventsItemFormView extends AbstractStatefulView {
     this.#validateForm();
   };
 
-  #eventPriceInputHandler = (evt) => {
+  #eventPriceChangeHandler = (evt) => {
     evt.preventDefault();
     const newPrice = Number(evt.target.value);
 
@@ -131,33 +161,6 @@ export default class EventsItemFormView extends AbstractStatefulView {
       offers: selectedOffers.map((offerCheckboxElement) => offerCheckboxElement.id)
     });
   };
-
-  _restoreHandlers() {
-    if (!this.#isNewItem) {
-      this.element.querySelector('.event__rollup-btn').
-        addEventListener('click', this.#closeFormClickHandler);
-    }
-
-    this.element
-      .querySelector('.event--edit')
-      .addEventListener('submit', this.#formSubmitHandler);
-
-    this.element
-      .querySelector('.event__type-group')
-      .addEventListener('change', this.#eventTypeChangeHandler);
-
-    this.element
-      .querySelector('.event__input--destination')
-      .addEventListener('change', this.#eventDestinationChangeHandler);
-
-    this.element
-      .querySelector('.event__input--price')
-      .addEventListener('change', this.#eventPriceInputHandler);
-
-    this.element
-      .querySelector('.event__available-offers')
-      ?.addEventListener('change', this.#offerChangeHandler);
-  }
 
   static parseEventToState(event, destination, offersByType, allDestinations) {
     return {...event,

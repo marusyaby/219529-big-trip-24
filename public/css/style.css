@@ -832,7 +832,7 @@ main {
   .event__photo:not(:last-child) {
     margin-right: 5px; }
 
-  .event__field-group--invalid {
+.event__field-group--invalid {
     border-color: #f80343;
   }
 
