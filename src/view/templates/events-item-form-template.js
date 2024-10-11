@@ -23,14 +23,14 @@ const createTypeItem = (value, isChecked) => `
 const createDestinationsItemOptionTemplate = (city) =>
   `<option value="${city ? city : ''}"></option>`;
 
-const createOfferTemplate = (offer, selectedOffers, id) => {
-  const isChecked = selectedOffers.includes(offer);
+const createOfferTemplate = (offer, selectedOffers) => {
+  const isChecked = selectedOffers.includes(offer.id);
 
   return `
                     <div class="event__available-offers">
                       <div class="event__offer-selector">
-                        <input class="event__offer-checkbox  visually-hidden" id="${offer.id}-${id}" type="checkbox" name="${offer.title}" ${isChecked ? 'checked' : ''}>
-                        <label class="event__offer-label" for="${offer.id}-${id}">
+                        <input class="event__offer-checkbox  visually-hidden" id="${offer.id}" type="checkbox" name="${offer.title}" ${isChecked ? 'checked' : ''}>
+                        <label class="event__offer-label" for="${offer.id}">
                           <span class="event__offer-title">${offer.title}</span>
                           +€&nbsp;
                           <span class="event__offer-price">${offer.price}</span>
@@ -39,8 +39,8 @@ const createOfferTemplate = (offer, selectedOffers, id) => {
 `;
 };
 
-const createOffersTemplate = (selectedOffers, offersByType, id) => {
-  const offers = offersByType.map((offer) => createOfferTemplate(offer, selectedOffers, id)).join('');
+const createOffersTemplate = (selectedOffers, offersByType) => {
+  const offers = offersByType.map((offer) => createOfferTemplate(offer, selectedOffers)).join('');
   return `
     <section class="event__section  event__section--offers">
                     <h3 class="event__section-title  event__section-title--offers">Offers</h3>
@@ -79,9 +79,9 @@ const createDestinationTemplate = (destination) =>
 
   </section>`;
 
-const createFormDetailsTemplate = (destination, selectedOffers, offersByType, id) =>
+const createFormDetailsTemplate = (destination, selectedOffers, offersByType) =>
   `<section class="event__details">
-${offersByType.length > 0 ? createOffersTemplate(selectedOffers, offersByType, id) : ''}
+${offersByType.length > 0 ? createOffersTemplate(selectedOffers, offersByType) : ''}
 ${!!destination.description && !!destination.pictures ? createDestinationTemplate(destination) : ''}
 </section>`;
 
@@ -95,10 +95,10 @@ const createResetButtonTemplate = (isNewEvent) => `
     <button class="event__reset-btn" type="reset">${isNewEvent ? 'Cancel' : 'Delete'}</button>
 `;
 
-export const createEventsItemFormTemplate = (isNewEvent, event, destination, selectedOffers, allDestinations, offersByType) => {
+export const createEventsItemFormTemplate = (isNewEvent, event, allDestinations) => {
   const {id, type, dateFrom, dateTo, basePrice} = event;
   const capitalizedType = capitalizeFirstLetter(type);
-  const city = destination.name ? destination.name : '';
+  const city = event.destination.name ?? '';
   const typesList = EVENT_TYPES.map((value) =>
     createTypeItem(value, value === type))
     .join('');
@@ -108,7 +108,7 @@ export const createEventsItemFormTemplate = (isNewEvent, event, destination, sel
   const startDate = dayjs(dateFrom).isValid() ? formatDate(dateFrom, Format.FULL_DATE) : '';
   const endDate = dayjs(dateTo).isValid() ? formatDate(dateTo, Format.FULL_DATE) : '';
   const rollupButtonTemplate = isNewEvent ? '' : createRollupButtonTemplate();
-  const formDetailsTemplate = createFormDetailsTemplate(destination, selectedOffers, offersByType, id);
+  const formDetailsTemplate = createFormDetailsTemplate(event.destination, event.offers, event.offersByType);
   const resetButtonTemplate = createResetButtonTemplate(isNewEvent);
 
   return `
@@ -123,7 +123,7 @@ export const createEventsItemFormTemplate = (isNewEvent, event, destination, sel
                     <input class="event__type-toggle  visually-hidden" id="event-type-toggle-${id}" type="checkbox">
 
                     <div class="event__type-list">
-                      <fieldset class="event__type-group">
+                      <fieldset class="event__type-group" >
                         <legend class="visually-hidden">Event type</legend>
 
                         ${typesList}
@@ -136,7 +136,7 @@ export const createEventsItemFormTemplate = (isNewEvent, event, destination, sel
                     <label class="event__label  event__type-output" for="event-destination-${id}">
                       ${capitalizedType}
                     </label>
-                    <input class="event__input  event__input--destination" id="event-destination-${id}" type="text" name="event-destination" value="${city}" list="destination-list-${id}">
+                    <input class="event__input  event__input--destination" id="event-destination-${id}" type="text" name="event-destination" value="${city}" list="destination-list-${id}" required autocomplete="off">
                     <datalist id="destination-list-${id}">
 
                     ${citiesDatalist}
@@ -157,7 +157,10 @@ export const createEventsItemFormTemplate = (isNewEvent, event, destination, sel
                       <span class="visually-hidden">Price</span>
                       €
                     </label>
-                    <input class="event__input  event__input--price" id="event-price-${id}" type="text" name="event-price" value="${basePrice}">
+                    <input class="event__input  event__input--price" id="event-price-${id}" name="event-price" value="${basePrice}" required min="1" max="100000" step="1"
+
+                    pattern="\\d+" type="number" autocomplete="off">
+                    <!--                    onkeypress="return /^-?[0-9]*$/.test(this.value+event.key)"-->
                   </div>
 
                   <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>

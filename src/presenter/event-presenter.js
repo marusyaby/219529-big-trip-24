@@ -54,11 +54,12 @@ export default class EventPresenter {
       isNewItem: false,
       event: this.#event,
       destination: this.#destination,
-      selectedOffers: this.#selectedOffers,
       allDestinations: this.#allDestinations,
       offersByType: [...this.#offersModel.getOffersByType(this.#event.type)],
       onCloseFormClick: this.#handleCloseFormClick,
       onFormSubmit: this.#handleFormSubmit,
+      getEventItemOffersByType : this.#getEventItemOffersByType,
+      getDestinationByName: this.#getDestinationByName,
     });
 
     if (!previousEventItem || !previousEventItemForm) {
@@ -84,6 +85,7 @@ export default class EventPresenter {
 
   resetView() {
     if (this.#mode !== Mode.VIEW_EVENT) {
+      // this.#eventItemForm.reset(this.#event);
       this.#replaceFormToEvent();
     }
   }
@@ -101,6 +103,12 @@ export default class EventPresenter {
     this.#mode = Mode.VIEW_EVENT;
   }
 
+  #getEventItemOffersByType = (type) =>
+    [...this.#offersModel.getOffersByType(type)];
+
+  #getDestinationByName = (name) =>
+    this.#destinationsModel.getDestinationByName(name);
+
   #renderEventItemNewForm() {
     this.#eventsItemNewForm = new EventsItemFormView({
       isNewItem: true,
@@ -109,6 +117,7 @@ export default class EventPresenter {
       selectedOffers: BLANK_EVENT.offers,
       allDestinations: this.#allDestinations,
       offersByType: this.#offersModel.getOffersByType(BLANK_EVENT.type),
+      getEventItemOffersByType : this.#getEventItemOffersByType,
     });
 
     render(this.#eventsItemNewForm, this.#eventsListContainer);
@@ -118,7 +127,8 @@ export default class EventPresenter {
     this.#replaceEventToForm();
   };
 
-  #handleCloseFormClick = () => {
+  #handleCloseFormClick = (event) => {
+    this.#handleEventItemChange(event);
     this.#replaceFormToEvent();
 
   };
@@ -138,6 +148,7 @@ export default class EventPresenter {
   #escKeyDownHandler = (evt) => {
     if (evt.key === 'Escape') {
       evt.preventDefault();
+      this.#eventItemForm.reset(this.#event);
       this.#replaceFormToEvent();
       document.removeEventListener('keydown', this.#escKeyDownHandler);
     }
