@@ -59,24 +59,24 @@ export default class EventsItemFormView extends AbstractStatefulView {
     }
 
     this.element
-    .querySelector('.event--edit')
-    .addEventListener('submit', this.#formSubmitHandler);
+      .querySelector('.event--edit')
+      .addEventListener('submit', this.#formSubmitHandler);
 
     this.element
-    .querySelector('.event__type-group')
-    .addEventListener('change', this.#eventTypeChangeHandler);
+      .querySelector('.event__type-group')
+      .addEventListener('change', this.#eventTypeChangeHandler);
 
     this.element
-    .querySelector('.event__input--destination')
-    .addEventListener('change', this.#eventDestinationChangeHandler);
+      .querySelector('.event__input--destination')
+      .addEventListener('change', this.#eventDestinationChangeHandler);
 
     this.element
-    .querySelector('.event__input--price')
-    .addEventListener('change', this.#eventPriceChangeHandler);
+      .querySelector('.event__input--price')
+      .addEventListener('change', this.#eventPriceChangeHandler);
 
     this.element
-    .querySelector('.event__available-offers')
-    ?.addEventListener('change', this.#offerChangeHandler);
+      .querySelector('.event__available-offers')
+      ?.addEventListener('change', this.#offerChangeHandler);
   }
 
   reset(event) {
