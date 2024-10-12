@@ -80,8 +80,11 @@ export default class EventsItemFormView extends AbstractStatefulView {
   }
 
   reset(event) {
+    this.element.querySelectorAll('.event__input')
+      .forEach((input) => input.blur());
     this.updateElement(
-      EventsItemFormView.parseEventToState(event, this.#destination, this.#offersByType, this.#allDestinations)
+      EventsItemFormView.parseEventToState(event, this.#destination,
+        this.#offersByType)
     );
   }
 
@@ -162,16 +165,14 @@ export default class EventsItemFormView extends AbstractStatefulView {
     });
   };
 
-  static parseEventToState(event, destination, offersByType, allDestinations) {
+  static parseEventToState(event, destination, offersByType) {
     return {...event,
       destination,
       offersByType,
-      allDestinations
     };
   }
 
   static parseStateToEvent(state) {
-    const event = {...state};
-    return event;
+    return {...state};
   }
 }
