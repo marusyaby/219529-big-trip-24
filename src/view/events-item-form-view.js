@@ -140,8 +140,8 @@ export default class EventsItemFormView extends AbstractStatefulView {
 
   #startDateCloseHandler = ([enteredDate]) => {
     this.updateElement({
-        ...this._state,
-        dateFrom: enteredDate ?? ''
+      ...this._state,
+      dateFrom: enteredDate ?? ''
     });
     this.#datepickerTo.set('minDate', this._state.dateFrom);
     this.#validateForm();
@@ -149,8 +149,8 @@ export default class EventsItemFormView extends AbstractStatefulView {
 
   #endDateCloseHandler = ([enteredDate]) => {
     this.updateElement({
-        ...this._state,
-        dateTo: enteredDate ?? ''
+      ...this._state,
+      dateTo: enteredDate ?? ''
     });
     this.#validateForm();
   };
@@ -161,7 +161,6 @@ export default class EventsItemFormView extends AbstractStatefulView {
       this._state.basePrice <= 0 ||
       this._state.basePrice > MAX_PRICE;
     const isDestinationInvalid = !this._state.destination;
-    const isStartDateInvalid = !this._state.dateFrom;
     const isDateInvalid =
       dayjs(this._state.dateTo).isBefore(this._state.dateFrom) ||
       !this._state.dateFrom ||
