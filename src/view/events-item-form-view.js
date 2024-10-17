@@ -167,7 +167,7 @@ export default class EventsItemFormView extends AbstractStatefulView {
       !Number.isSafeInteger(this._state.basePrice) ||
       this._state.basePrice <= 0 ||
       this._state.basePrice > MAX_PRICE;
-    const isDestinationInvalid = !this._state.destination;
+    const isDestinationInvalid = !this._state.fullDestination;
     const isDateInvalid =
       dayjs(this._state.dateTo).isBefore(this._state.dateFrom) ||
       !this._state.dateFrom ||
