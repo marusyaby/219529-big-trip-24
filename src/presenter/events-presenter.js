@@ -3,7 +3,19 @@ import {render} from '../framework/render.js';
 import EventsListView from '../view/events-list-view.js';
 import EventsMessageView, {EventsMessage} from '../view/events-message-view.js';
 import EventPresenter from './event-presenter.js';
-import {generateSortTypes, sortEvents, updateItem} from '../utils.js';
+import {generateSortTypes, sortEvents} from '../utils.js';
+
+export const UserAction = {
+  UPDATE_EVENT: 'UPDATE_EVENT',
+  ADD_EVENT: 'ADD_EVENT',
+  DELETE_EVENT: 'DELETE_EVENT',
+};
+
+export const UpdateType = {
+  PATCH: 'PATCH',
+  MINOR: 'MINOR',
+  MAJOR: 'MAJOR',
+};
 
 export default class EventsPresenter {
   #eventsContainer = null;
@@ -12,12 +24,10 @@ export default class EventsPresenter {
   #destinationsModel = null;
   #offersModel = null;
 
-  #events = [];
   #eventsList = null;
   #eventPresenter = null;
   #eventPresenters = new Map();
 
-  #sortTypes = [];
   #defaultSortType = SortType.DAY;
   #currentSortType = this.#defaultSortType;
 
@@ -26,11 +36,16 @@ export default class EventsPresenter {
     this.#eventsModel = eventsModel;
     this.#destinationsModel = destinationsModel;
     this.#offersModel = offersModel;
-    this.#events = [...this.#eventsModel.events];
+    this.#eventsModel.addObserver(this.#modelEventHandler);
+  }
+
+  get events() {
+    const events = this.#eventsModel.events;
+    return sortEvents[this.#currentSortType](events);
   }
 
   init() {
-    if (this.#events.length === 0) {
+    if (this.events.length === 0) {
       this.#renderEventsMessage(EventsMessage.EMPTY.EVERYTHING);
       return;
     }
@@ -41,17 +56,12 @@ export default class EventsPresenter {
   }
 
   #renderEventsSort() {
-    this.#sortTypes = generateSortTypes(this.#defaultSortType);
+    const sortTypes = generateSortTypes(this.#defaultSortType);
 
     render(new EventsSortView({
-      items: this.#sortTypes,
+      items: sortTypes,
       onItemChange: this.#handleSortTypeChange,
     }), this.#eventsContainer);
-  }
-
-  #sortEvents(sortType) {
-    this.#currentSortType = sortType;
-    this.#events = sortEvents[sortType](this.#events);
   }
 
   #clearEvents() {
@@ -59,6 +69,16 @@ export default class EventsPresenter {
       presenter.destroy());
     this.#eventPresenters.clear();
   }
+
+  #clearEventsList = ({resetSortType = false} = {}) => {
+    this.#clearEvents();
+    // убрать сортировку;
+    // убрать ul?;
+
+    if (resetSortType) {
+      this.#currentSortType = SortType.DAY;
+    }
+  };
 
   #renderEventsList() {
     this.#eventsList = new EventsListView();
@@ -70,7 +90,7 @@ export default class EventsPresenter {
       eventsListContainer: this.#eventsList.element,
       destinationsModel: this.#destinationsModel,
       offersModel: this.#offersModel,
-      onEventItemChange: this.#handleEventItemChange,
+      onDataChange: this.#handleViewAction,
       onModeChange: this.#handleModeChange,
     });
 
@@ -79,8 +99,9 @@ export default class EventsPresenter {
   }
 
   #renderEventItems() {
-    this.#sortEvents(this.#currentSortType);
-    this.#events.forEach((event) => {
+    // если пусто, показать сообщение?
+
+    this.events.forEach((event) => {
       this.#renderEventItem(event);
     });
   }
@@ -89,19 +110,40 @@ export default class EventsPresenter {
     render(new EventsMessageView(message), this.#eventsContainer);
   }
 
-  #handleEventItemChange = (updatedEvent) => {
-    this.#events = updateItem(updatedEvent, this.#events);
-    this.#eventPresenters.get(updatedEvent.id).init(updatedEvent);
-  };
-
   #handleModeChange = () => {
     this.#eventPresenters.forEach((presenter) =>
       presenter.resetView());
   };
 
   #handleSortTypeChange = (sortType) => {
-    this.#sortEvents(sortType);
+    this.#currentSortType = sortType;
     this.#clearEvents();
     this.#renderEventItems();
+  };
+
+  #handleViewAction = (actionType, updateType, update) => {
+    if (actionType === UserAction.UPDATE_EVENT) {
+      this.#eventsModel.updateEvent(updateType, update);
+    }
+    if (actionType === UserAction.ADD_EVENT) {
+      this.#eventsModel.addEvent(updateType, update);
+    }
+    if (actionType === UserAction.DELETE_EVENT) {
+      this.#eventsModel.deleteEvent(updateType, update);
+    }
+  };
+
+  #modelEventHandler = (updateType, data) => {
+    if (updateType === UpdateType.PATCH) {
+      this.#eventPresenters?.get(data.id)?.init(data);
+    }
+    if (updateType === UpdateType.MINOR) {
+      this.#clearEventsList();
+      this.#renderEventItems();
+    }
+    if (updateType === UpdateType.MAJOR) {
+      this.#clearEventsList({resetSortType: true});
+      this.#renderEventItems();
+    }
   };
 }

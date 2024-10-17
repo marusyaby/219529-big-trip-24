@@ -25,6 +25,7 @@ export default class EventsItemFormView extends AbstractStatefulView {
   #offersByType = [];
   #handleCloseFormClick = null;
   #handleFormSubmit = null;
+  #handleFormDeleteClick = null;
   #getEventItemOffersByType = null;
   #getDestinationByName = null;
   #datepickerFrom = null;
@@ -38,6 +39,7 @@ export default class EventsItemFormView extends AbstractStatefulView {
     offersByType,
     onCloseFormClick,
     onFormSubmit,
+    onFormDeleteClick,
     getEventItemOffersByType,
     getDestinationByName,
   }) {
@@ -49,6 +51,7 @@ export default class EventsItemFormView extends AbstractStatefulView {
     this.#offersByType = offersByType;
     this.#handleCloseFormClick = onCloseFormClick;
     this.#handleFormSubmit = onFormSubmit;
+    this.#handleFormDeleteClick = onFormDeleteClick;
     this.#getEventItemOffersByType = getEventItemOffersByType;
     this.#getDestinationByName = getDestinationByName;
     this._setState(EventsItemFormView.parseEventToState(event, destination, offersByType));
@@ -68,6 +71,10 @@ export default class EventsItemFormView extends AbstractStatefulView {
     this.element
       .querySelector('.event--edit')
       .addEventListener('submit', this.#formSubmitHandler);
+
+    this.element
+      .querySelector('.event__reset-btn')
+      .addEventListener('click', this.#formDeleteClicktHandler);
 
     this.element
       .querySelector('.event__type-group')
@@ -191,7 +198,12 @@ export default class EventsItemFormView extends AbstractStatefulView {
 
   #formSubmitHandler = (evt) => {
     evt.preventDefault(evt);
-    this.#handleFormSubmit(EventsItemFormView.parseStateToEvent(this.#initialEvent));
+    this.#handleFormSubmit(EventsItemFormView.parseStateToEvent(this._state));
+  };
+
+  #formDeleteClicktHandler = (evt) => {
+    evt.preventDefault();
+    this.#handleFormDeleteClick(this._state);
   };
 
   #eventTypeChangeHandler = (evt) => {

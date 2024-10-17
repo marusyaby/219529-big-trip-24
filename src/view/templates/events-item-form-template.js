@@ -98,7 +98,8 @@ const createResetButtonTemplate = (isNewEvent) => `
 export const createEventsItemFormTemplate = (isNewEvent, event, allDestinations) => {
   const {id, type, dateFrom, dateTo, basePrice} = event;
   const capitalizedType = capitalizeFirstLetter(type);
-  const city = event.destination.name ?? '';
+  // const city = event.destination.name ?? '';
+  const city = event.destination ? event.destination.name : event.destination;
   const typesList = EVENT_TYPES.map((value) =>
     createTypeItem(value, value === type))
     .join('');
@@ -108,7 +109,7 @@ export const createEventsItemFormTemplate = (isNewEvent, event, allDestinations)
   const startDate = dayjs(dateFrom).isValid() ? formatDate(dateFrom, Format.FULL_DATE) : '';
   const endDate = dayjs(dateTo).isValid() ? formatDate(dateTo, Format.FULL_DATE) : '';
   const rollupButtonTemplate = isNewEvent ? '' : createRollupButtonTemplate();
-  const formDetailsTemplate = createFormDetailsTemplate(event.destination, event.offers, event.offersByType);
+  const formDetailsTemplate = event.destination ? createFormDetailsTemplate(event.destination, event.offers, event.offersByType) : '';
   const resetButtonTemplate = createResetButtonTemplate(isNewEvent);
 
   return `
