@@ -1,4 +1,4 @@
-import {getRandomElement} from '../utils.js';
+import {getRandomElement, updateItem} from '../utils.js';
 import {eventsMock} from '../mock/events-mock.js';
 import Observable from '../framework/observable.js';
 
@@ -13,18 +13,7 @@ export default class EventsModel extends Observable {
   }
 
   updateEvent (updateType, updatedEvent) {
-    const index = this.#events.findIndex((event) => event.id === updatedEvent.id);
-
-    if (index === -1) {
-      throw new Error('Unable to update a non-existent point');
-    }
-
-    this.#events = [
-      ...this.#events.slice(0, index),
-      updatedEvent,
-      ...this.#events.slice(index + 1),
-    ];
-
+    this.#events = updateItem(updatedEvent, this.#events);
     this._notify(updateType, updatedEvent);
   }
 
@@ -36,9 +25,5 @@ export default class EventsModel extends Observable {
   deleteEvent (updateType, updatedEvent) {
     this.#events = this.#events.filter((item)=>item.id !== updatedEvent.id);
     this._notify(updateType);
-  }
-
-  getEventById(eventId) {
-    return this.#events.find((item) => item.id === eventId);
   }
 }

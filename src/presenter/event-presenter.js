@@ -136,12 +136,21 @@ export default class EventPresenter {
   };
 
   #handleFormSubmit = (updatedEvent) => {
+    const isMinorUpdate =
+      this.#event.dateFrom !== updatedEvent.dateFrom ||
+      this.#event.dateTo !== updatedEvent.dateTo ||
+      this.#event.basePrice !== updatedEvent.basePrice;
+
+    const currentUpdateType = isMinorUpdate ?
+      UpdateType.MINOR : UpdateType.PATCH;
+
     this.#handleDataChange(
       UserAction.UPDATE_EVENT,
-      UpdateType.MINOR,
+      currentUpdateType,
       updatedEvent,
     );
     this.#replaceFormToEvent();
+
   };
 
   #handleFormDeleteClick = (deletedEvent) => {
