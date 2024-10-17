@@ -20,7 +20,7 @@ const MAX_PRICE = 100000;
 export default class EventsItemFormView extends AbstractStatefulView {
   #isNewItem = null;
   #initialEvent = null;
-  #destination = null;
+  #fullDestination = null;
   #allDestinations = [];
   #offersByType = [];
   #handleCloseFormClick = null;
@@ -34,7 +34,7 @@ export default class EventsItemFormView extends AbstractStatefulView {
   constructor({
     isNewItem,
     event,
-    destination,
+    fullDestination,
     allDestinations,
     offersByType,
     onCloseFormClick,
@@ -46,7 +46,7 @@ export default class EventsItemFormView extends AbstractStatefulView {
     super();
     this.#isNewItem = isNewItem;
     this.#initialEvent = event;
-    this.#destination = destination;
+    this.#fullDestination = fullDestination;
     this.#allDestinations = allDestinations;
     this.#offersByType = offersByType;
     this.#handleCloseFormClick = onCloseFormClick;
@@ -54,7 +54,7 @@ export default class EventsItemFormView extends AbstractStatefulView {
     this.#handleFormDeleteClick = onFormDeleteClick;
     this.#getEventItemOffersByType = getEventItemOffersByType;
     this.#getDestinationByName = getDestinationByName;
-    this._setState(EventsItemFormView.parseEventToState(event, destination, offersByType));
+    this._setState(EventsItemFormView.parseEventToState(event, fullDestination, offersByType));
     this._restoreHandlers();
   }
 
@@ -99,7 +99,7 @@ export default class EventsItemFormView extends AbstractStatefulView {
     this.element.querySelectorAll('.event__input')
       .forEach((input) => input.blur());
     this.updateElement(
-      EventsItemFormView.parseEventToState(event, this.#destination,
+      EventsItemFormView.parseEventToState(event, this.#fullDestination,
         this.#offersByType)
     );
   }
@@ -226,8 +226,15 @@ export default class EventsItemFormView extends AbstractStatefulView {
     const newDestination = this.#getDestinationByName(targetDestination);
 
     this.updateElement({
-      destination: newDestination ?? '',
+      fullDestination: newDestination ?? '',
     });
+
+    if (newDestination) {
+      this._setState({
+        ...this._state.event,
+        destination: newDestination.id,
+      });
+    }
 
     this.#validateForm();
   };
@@ -252,9 +259,9 @@ export default class EventsItemFormView extends AbstractStatefulView {
     });
   };
 
-  static parseEventToState(event, destination, offersByType) {
+  static parseEventToState(event, fullDestination, offersByType) {
     return {...event,
-      destination,
+      fullDestination,
       offersByType,
     };
   }

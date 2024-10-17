@@ -18,7 +18,7 @@ export default class EventPresenter {
   #offersModel = null;
 
   #event = null;
-  #destination = null;
+  #fullDestination = null;
   #selectedOffers = [];
   #allDestinations = [];
 
@@ -37,7 +37,7 @@ export default class EventPresenter {
 
   init(event) {
     this.#event = event;
-    this.#destination = this.#destinationsModel.getDestinationsById(event.destination);
+    this.#fullDestination = this.#destinationsModel.getDestinationsById(event.destination);
     this.#selectedOffers = this.#offersModel.getOffersById(this.#event.type, this.#event.offers);
 
     const previousEventItem = this.#eventItem;
@@ -45,7 +45,7 @@ export default class EventPresenter {
 
     this.#eventItem = new EventsItemView({
       event: this.#event,
-      destination: this.#destination,
+      fullDestination: this.#fullDestination,
       selectedOffers: this.#selectedOffers,
       onOpenFormClick: this.#handleOpenFormClick,
       onFavoriteClick: this.#handleFavoriteClick,
@@ -54,7 +54,7 @@ export default class EventPresenter {
     this.#eventItemForm = new EventsItemFormView({
       isNewItem: false,
       event: this.#event,
-      destination: this.#destination,
+      fullDestination: this.#fullDestination,
       allDestinations: this.#allDestinations,
       offersByType: [...this.#offersModel.getOffersByType(this.#event.type)],
       onCloseFormClick: this.#handleCloseFormClick,
