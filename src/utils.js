@@ -94,13 +94,12 @@ export const generateSortTypes = (defaultSortType) =>
     }),
   );
 
-export const generateFilterTypes = (events) =>
+export const generateFilterTypes = (events, activeFilterType) =>
   Object.entries(enableFilterType).map(
-    ([type, checkFilterAvailability], index) => ({
+    ([type, checkFilterAvailability]) => ({
       type,
       isClickable: checkFilterAvailability(events),
-      isActive: index === 0,
-      filteredEvents: filterEvents[type](events),
+      isActive: type === activeFilterType,
     }),
   );
 

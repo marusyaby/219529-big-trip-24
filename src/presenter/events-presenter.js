@@ -3,7 +3,7 @@ import {remove, render} from '../framework/render.js';
 import EventsListView from '../view/events-list-view.js';
 import EventsMessageView, {EventsMessage} from '../view/events-message-view.js';
 import EventPresenter from './event-presenter.js';
-import {generateSortTypes, sortEvents} from '../utils.js';
+import {filterEvents, generateSortTypes, sortEvents} from '../utils.js';
 
 export const UserAction = {
   UPDATE_EVENT: 'UPDATE_EVENT',
@@ -23,6 +23,7 @@ export default class EventsPresenter {
   #eventsModel = null;
   #destinationsModel = null;
   #offersModel = null;
+  #filtersModel = null;
 
   #eventsList = null;
   #eventPresenter = null;
@@ -32,17 +33,26 @@ export default class EventsPresenter {
   #currentSortType = this.#defaultSortType;
   #eventsSort = null;
 
-  constructor({eventsContainer, eventsModel, destinationsModel, offersModel}) {
+  #currentFilterType = null;
+
+  #eventsMessage = null;
+
+  constructor({eventsContainer, eventsModel, destinationsModel, offersModel, filtersModel}) {
     this.#eventsContainer = eventsContainer;
     this.#eventsModel = eventsModel;
     this.#destinationsModel = destinationsModel;
     this.#offersModel = offersModel;
+    this.#filtersModel = filtersModel;
+
+    this.#filtersModel.addObserver(this.#modelEventHandler);
     this.#eventsModel.addObserver(this.#modelEventHandler);
   }
 
   get events() {
+    this.#currentFilterType = this.#filtersModel.filter;
     const events = this.#eventsModel.events;
-    return sortEvents[this.#currentSortType](events);
+    const filteredEvents = filterEvents[this.#currentFilterType](events);
+    return sortEvents[this.#currentSortType](filteredEvents);
   }
 
   init() {
@@ -84,7 +94,8 @@ export default class EventsPresenter {
   }
 
   #renderEventsMessage(message) {
-    render(new EventsMessageView(message), this.#eventsContainer);
+    this.#eventsMessage = new EventsMessageView(message);
+    render(this.#eventsMessage, this.#eventsContainer);
   }
 
   #renderContent() {
@@ -108,9 +119,10 @@ export default class EventsPresenter {
     this.#clearEvents();
     remove(this.#eventsSort);
     remove(this.#eventsList);
+    remove(this.#eventsMessage);
 
     if (resetSortType) {
-      this.#currentSortType = SortType.DAY;
+      this.#currentSortType = this.#defaultSortType;
     }
   };
 
