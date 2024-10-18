@@ -100,7 +100,7 @@ export default class EventsPresenter {
 
   #renderContent() {
     if (this.events.length === 0) {
-      this.#renderEventsMessage(EventsMessage.EMPTY.EVERYTHING);
+      this.#renderEventsMessage(EventsMessage.EMPTY[this.#currentFilterType]);
       return;
     }
 
