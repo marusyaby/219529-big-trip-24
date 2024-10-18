@@ -1,5 +1,5 @@
 import EventsSortView, {SortType} from '../view/events-sort-view.js';
-import {render} from '../framework/render.js';
+import {remove, render} from '../framework/render.js';
 import EventsListView from '../view/events-list-view.js';
 import EventsMessageView, {EventsMessage} from '../view/events-message-view.js';
 import EventPresenter from './event-presenter.js';
@@ -30,6 +30,7 @@ export default class EventsPresenter {
 
   #defaultSortType = SortType.DAY;
   #currentSortType = this.#defaultSortType;
+  #eventsSort = null;
 
   constructor({eventsContainer, eventsModel, destinationsModel, offersModel}) {
     this.#eventsContainer = eventsContainer;
@@ -45,40 +46,18 @@ export default class EventsPresenter {
   }
 
   init() {
-    if (this.events.length === 0) {
-      this.#renderEventsMessage(EventsMessage.EMPTY.EVERYTHING);
-      return;
-    }
-
-    this.#renderEventsSort();
-    this.#renderEventsList();
-    this.#renderEventItems();
+    this.#renderContent();
   }
 
   #renderEventsSort() {
-    const sortTypes = generateSortTypes(this.#defaultSortType);
-
-    render(new EventsSortView({
+    const sortTypes = generateSortTypes(this.#currentSortType);
+    this.#eventsSort = new EventsSortView({
       items: sortTypes,
       onItemChange: this.#handleSortTypeChange,
-    }), this.#eventsContainer);
+    });
+
+    render(this.#eventsSort, this.#eventsContainer);
   }
-
-  #clearEvents() {
-    this.#eventPresenters.forEach((presenter) =>
-      presenter.destroy());
-    this.#eventPresenters.clear();
-  }
-
-  #clearEventsList = ({resetSortType = false} = {}) => {
-    this.#clearEvents();
-    // убрать сортировку;
-    // убрать ul?;
-
-    if (resetSortType) {
-      this.#currentSortType = SortType.DAY;
-    }
-  };
 
   #renderEventsList() {
     this.#eventsList = new EventsListView();
@@ -99,8 +78,6 @@ export default class EventsPresenter {
   }
 
   #renderEventItems() {
-    // если пусто, показать сообщение?
-
     this.events.forEach((event) => {
       this.#renderEventItem(event);
     });
@@ -109,6 +86,33 @@ export default class EventsPresenter {
   #renderEventsMessage(message) {
     render(new EventsMessageView(message), this.#eventsContainer);
   }
+
+  #renderContent() {
+    if (this.events.length === 0) {
+      this.#renderEventsMessage(EventsMessage.EMPTY.EVERYTHING);
+      return;
+    }
+
+    this.#renderEventsSort();
+    this.#renderEventsList();
+    this.#renderEventItems();
+  }
+
+  #clearEvents() {
+    this.#eventPresenters.forEach((presenter) =>
+      presenter.destroy());
+    this.#eventPresenters.clear();
+  }
+
+  #clearContent = ({resetSortType = false} = {}) => {
+    this.#clearEvents();
+    remove(this.#eventsSort);
+    remove(this.#eventsList);
+
+    if (resetSortType) {
+      this.#currentSortType = SortType.DAY;
+    }
+  };
 
   #handleModeChange = () => {
     this.#eventPresenters.forEach((presenter) =>
@@ -138,12 +142,12 @@ export default class EventsPresenter {
       this.#eventPresenters?.get(data.id)?.init(data);
     }
     if (updateType === UpdateType.MINOR) {
-      this.#clearEventsList();
-      this.#renderEventItems();
+      this.#clearContent();
+      this.#renderContent();
     }
     if (updateType === UpdateType.MAJOR) {
-      this.#clearEventsList({resetSortType: true});
-      this.#renderEventItems();
+      this.#clearContent({resetSortType: true});
+      this.#renderContent();
     }
   };
 }
