@@ -82,7 +82,7 @@ const createDestinationTemplate = (destination) =>
 const createFormDetailsTemplate = (destination, selectedOffers, offersByType) =>
   `<section class="event__details">
 ${offersByType.length > 0 ? createOffersTemplate(selectedOffers, offersByType) : ''}
-${!!destination.description && !!destination.pictures ? createDestinationTemplate(destination) : ''}
+${destination?.description && destination?.pictures ? createDestinationTemplate(destination) : ''}
 </section>`;
 
 const createRollupButtonTemplate = () => `
@@ -98,7 +98,7 @@ const createResetButtonTemplate = (isNewEvent) => `
 export const createEventsItemFormTemplate = (isNewEvent, event, allDestinations) => {
   const {id, type, dateFrom, dateTo, basePrice} = event;
   const capitalizedType = capitalizeFirstLetter(type);
-  const city = event.fullDestination.name ?? '';
+  const city = event.fullDestination?.name ?? '';
   const typesList = EVENT_TYPES.map((value) =>
     createTypeItem(value, value === type))
     .join('');

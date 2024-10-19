@@ -5,11 +5,10 @@ import 'flatpickr/dist/flatpickr.min.css';
 import dayjs from 'dayjs';
 
 export const BLANK_EVENT = {
-  'id': '',
   'basePrice': 0,
-  'dateFrom': '',
-  'dateTo': '',
-  'destination': '',
+  'dateFrom': null,
+  'dateTo': null,
+  'destination': null,
   'isFavorite': false,
   'offers': [],
   'type': 'flight',
@@ -26,21 +25,21 @@ export default class EventsItemFormView extends AbstractStatefulView {
   #handleCloseFormClick = null;
   #handleFormSubmit = null;
   #handleFormDeleteClick = null;
-  #getEventItemOffersByType = null;
+  #getOffersByType = null;
   #getDestinationByName = null;
   #datepickerFrom = null;
   #datepickerTo = null;
 
   constructor({
     isNewItem,
-    event,
+    event = BLANK_EVENT,
     fullDestination,
     allDestinations,
     offersByType,
     onCloseFormClick,
     onFormSubmit,
     onFormDeleteClick,
-    getEventItemOffersByType,
+    getOffersByType,
     getDestinationByName,
   }) {
     super();
@@ -52,7 +51,7 @@ export default class EventsItemFormView extends AbstractStatefulView {
     this.#handleCloseFormClick = onCloseFormClick;
     this.#handleFormSubmit = onFormSubmit;
     this.#handleFormDeleteClick = onFormDeleteClick;
-    this.#getEventItemOffersByType = getEventItemOffersByType;
+    this.#getOffersByType = getOffersByType;
     this.#getDestinationByName = getDestinationByName;
     this._setState(EventsItemFormView.parseEventToState(event, fullDestination, offersByType));
     this._restoreHandlers();
@@ -95,11 +94,11 @@ export default class EventsItemFormView extends AbstractStatefulView {
     this.#setDatepickers();
   }
 
-  reset(event) {
+  reset() {
     this.element.querySelectorAll('.event__input')
       .forEach((input) => input.blur());
     this.updateElement(
-      EventsItemFormView.parseEventToState(event, this.#fullDestination,
+      EventsItemFormView.parseEventToState(this.#initialEvent, this.#fullDestination,
         this.#offersByType)
     );
   }
@@ -142,7 +141,6 @@ export default class EventsItemFormView extends AbstractStatefulView {
       onClose: this.#endDateCloseHandler,
       minDate: this._state.dateFrom
     });
-
   };
 
   #startDateCloseHandler = ([enteredDate]) => {
@@ -209,7 +207,7 @@ export default class EventsItemFormView extends AbstractStatefulView {
   #eventTypeChangeHandler = (evt) => {
     evt.preventDefault();
     const targetType = evt.target.value;
-    this.#offersByType = this.#getEventItemOffersByType(targetType);
+    this.#offersByType = this.#getOffersByType(targetType);
 
     this.updateElement({
       type: targetType,

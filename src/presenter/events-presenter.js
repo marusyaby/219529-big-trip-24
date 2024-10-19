@@ -4,6 +4,8 @@ import EventsListView from '../view/events-list-view.js';
 import EventsMessageView, {EventsMessage} from '../view/events-message-view.js';
 import EventPresenter from './event-presenter.js';
 import {filterEvents, generateSortTypes, sortEvents} from '../utils.js';
+import {FilterType} from '../view/filters-view.js';
+import NewEventPresenter from './new-event-presenter.js';
 
 export const UserAction = {
   UPDATE_EVENT: 'UPDATE_EVENT',
@@ -37,12 +39,25 @@ export default class EventsPresenter {
 
   #eventsMessage = null;
 
-  constructor({eventsContainer, eventsModel, destinationsModel, offersModel, filtersModel}) {
+  #newEventButtonPresenter = null;
+  #newEventPresenter = null;
+
+  constructor({eventsContainer, eventsModel, destinationsModel, offersModel, filtersModel, newEventButtonPresenter}) {
     this.#eventsContainer = eventsContainer;
     this.#eventsModel = eventsModel;
     this.#destinationsModel = destinationsModel;
     this.#offersModel = offersModel;
     this.#filtersModel = filtersModel;
+    this.#newEventButtonPresenter = newEventButtonPresenter;
+    this.#eventsList = new EventsListView();
+
+    this.#newEventPresenter = new NewEventPresenter({
+      eventsList: this.#eventsList,
+      destinationsModel: this.#destinationsModel,
+      offersModel: this.#offersModel,
+      onDataChange: this.#handleViewAction,
+      onDestroy: this.#newEventDestroyHandler,
+    });
 
     this.#filtersModel.addObserver(this.#modelEventHandler);
     this.#eventsModel.addObserver(this.#modelEventHandler);
@@ -59,6 +74,17 @@ export default class EventsPresenter {
     this.#renderContent();
   }
 
+  newEventButtonClickHandler = () => {
+    this.#currentSortType = this.#defaultSortType;
+    this.#filtersModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
+    this.#newEventButtonPresenter.disable();
+    if (this.events.length === 0) {
+      this.#renderEventsList();
+      remove(this.#eventsMessage);
+    }
+    this.#newEventPresenter.init();
+  };
+
   #renderEventsSort() {
     const sortTypes = generateSortTypes(this.#currentSortType);
     this.#eventsSort = new EventsSortView({
@@ -70,7 +96,6 @@ export default class EventsPresenter {
   }
 
   #renderEventsList() {
-    this.#eventsList = new EventsListView();
     render(this.#eventsList, this.#eventsContainer);
   }
 
@@ -110,6 +135,7 @@ export default class EventsPresenter {
   }
 
   #clearEvents() {
+    this.#newEventPresenter.destroy();
     this.#eventPresenters.forEach((presenter) =>
       presenter.destroy());
     this.#eventPresenters.clear();
@@ -127,6 +153,7 @@ export default class EventsPresenter {
   };
 
   #handleModeChange = () => {
+    this.#newEventPresenter.destroy();
     this.#eventPresenters.forEach((presenter) =>
       presenter.resetView());
   };
@@ -159,6 +186,13 @@ export default class EventsPresenter {
     }
     if (updateType === UpdateType.MAJOR) {
       this.#clearContent({resetSortType: true});
+      this.#renderContent();
+    }
+  };
+
+  #newEventDestroyHandler = () => {
+    this.#newEventButtonPresenter.enable();
+    if (this.events.length === 0) {
       this.#renderContent();
     }
   };
