@@ -5,6 +5,7 @@ import 'flatpickr/dist/flatpickr.min.css';
 import dayjs from 'dayjs';
 
 export const BLANK_EVENT = {
+  'id': null,
   'basePrice': 0,
   'dateFrom': null,
   'dateTo': null,
