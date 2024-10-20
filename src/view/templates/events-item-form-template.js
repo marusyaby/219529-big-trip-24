@@ -1,5 +1,6 @@
 import {capitalizeFirstLetter, Format, formatDate} from '../../utils.js';
 import dayjs from 'dayjs';
+import he from 'he';
 
 export const EVENT_TYPES = [
   'taxi',
@@ -82,7 +83,7 @@ const createDestinationTemplate = (destination) =>
 const createFormDetailsTemplate = (destination, selectedOffers, offersByType) =>
   `<section class="event__details">
 ${offersByType.length > 0 ? createOffersTemplate(selectedOffers, offersByType) : ''}
-${!!destination.description && !!destination.pictures ? createDestinationTemplate(destination) : ''}
+${destination?.description && destination?.pictures ? createDestinationTemplate(destination) : ''}
 </section>`;
 
 const createRollupButtonTemplate = () => `
@@ -98,7 +99,7 @@ const createResetButtonTemplate = (isNewEvent) => `
 export const createEventsItemFormTemplate = (isNewEvent, event, allDestinations) => {
   const {id, type, dateFrom, dateTo, basePrice} = event;
   const capitalizedType = capitalizeFirstLetter(type);
-  const city = event.destination.name ?? '';
+  const city = event.fullDestination?.name ?? '';
   const typesList = EVENT_TYPES.map((value) =>
     createTypeItem(value, value === type))
     .join('');
@@ -108,7 +109,7 @@ export const createEventsItemFormTemplate = (isNewEvent, event, allDestinations)
   const startDate = dayjs(dateFrom).isValid() ? formatDate(dateFrom, Format.FULL_DATE) : '';
   const endDate = dayjs(dateTo).isValid() ? formatDate(dateTo, Format.FULL_DATE) : '';
   const rollupButtonTemplate = isNewEvent ? '' : createRollupButtonTemplate();
-  const formDetailsTemplate = createFormDetailsTemplate(event.destination, event.offers, event.offersByType);
+  const formDetailsTemplate = createFormDetailsTemplate(event.fullDestination, event.offers, event.offersByType);
   const resetButtonTemplate = createResetButtonTemplate(isNewEvent);
 
   return `
@@ -136,7 +137,7 @@ export const createEventsItemFormTemplate = (isNewEvent, event, allDestinations)
                     <label class="event__label  event__type-output" for="event-destination-${id}">
                       ${capitalizedType}
                     </label>
-                    <input class="event__input  event__input--destination" id="event-destination-${id}" type="text" name="event-destination" value="${city}" list="destination-list-${id}" required autocomplete="off">
+                    <input class="event__input  event__input--destination" id="event-destination-${id}" type="text" name="event-destination" value="${he.encode(String(city))}" list="destination-list-${id}" required autocomplete="off">
                     <datalist id="destination-list-${id}">
 
                     ${citiesDatalist}
@@ -157,7 +158,7 @@ export const createEventsItemFormTemplate = (isNewEvent, event, allDestinations)
                       <span class="visually-hidden">Price</span>
                       €
                     </label>
-                    <input class="event__input  event__input--price" id="event-price-${id}" name="event-price" value="${basePrice}" required min="1" max="100000" step="1"
+                    <input class="event__input  event__input--price" id="event-price-${id}" name="event-price" value="${he.encode(String(basePrice))}" required min="1" max="100000" step="1"
 
                     pattern="\\d+" type="number" autocomplete="off">
 

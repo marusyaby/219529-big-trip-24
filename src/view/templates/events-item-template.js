@@ -18,9 +18,9 @@ const createOffersTemplate = (selectedOffers) =>
     selectedOffers.map((offer) => createOfferTemplate(offer.title, offer.price)).
       join('') : '';
 
-export const createEventsItemTemplate = (event, destination, selectedOffers) => {
+export const createEventsItemTemplate = (event, fullDestination, selectedOffers) => {
   const {basePrice, isFavorite, type, dateFrom, dateTo} = event;
-  const city = capitalizeFirstLetter(destination.name);
+  const city = capitalizeFirstLetter(fullDestination.name);
   const capitalizedType = capitalizeFirstLetter(type);
   const startDate = formatDate(dateFrom, Format.DATE);
   const startTime = formatDate(dateFrom, Format.TIME);
