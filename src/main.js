@@ -56,8 +56,8 @@ function getButtonClickHandler() {
   return eventsPresenter.newEventButtonClickHandler();
 }
 
-eventsModel.init();
 tripInfoPresenter.init();
-eventsPresenter.init();
 filtersPresenter.init();
 newEventButtonPresenter.init();
+eventsModel.init();
+eventsPresenter.init();

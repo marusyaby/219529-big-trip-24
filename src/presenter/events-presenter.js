@@ -43,6 +43,8 @@ export default class EventsPresenter {
   #newEventButtonPresenter = null;
   #newEventPresenter = null;
 
+  #isLoading = true;
+
   constructor({eventsContainer, eventsModel, destinationsModel, offersModel, filtersModel, newEventButtonPresenter}) {
     this.#eventsContainer = eventsContainer;
     this.#eventsModel = eventsModel;
@@ -125,6 +127,12 @@ export default class EventsPresenter {
   }
 
   #renderContent() {
+    if (this.#isLoading) {
+      this.#renderEventsMessage(EventsMessage.LOADING);
+      this.#newEventButtonPresenter.disable();
+      return;
+    }
+
     if (this.events.length === 0) {
       this.#renderEventsMessage(EventsMessage.EMPTY[this.#currentFilterType]);
       return;
@@ -190,6 +198,8 @@ export default class EventsPresenter {
       this.#renderContent();
     }
     if (updateType === UpdateType.INIT) {
+      this.#isLoading = false;
+      this.#newEventButtonPresenter.enable();
       this.#clearContent();
       this.#renderContent();
     }

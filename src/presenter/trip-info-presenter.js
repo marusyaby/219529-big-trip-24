@@ -1,6 +1,5 @@
 import TripInfoView from '../view/trip-info-view.js';
-import NewEventButtonView from '../view/new-event-button-view.js';
-import {render} from '../framework/render';
+import {render} from '../framework/render.js';
 
 export default class TripInfoPresenter {
   #eventsModel = null;
@@ -14,16 +13,11 @@ export default class TripInfoPresenter {
 
   init() {
     this.#renderTripInfo();
-    // this.#renderNewEventButton();
   }
 
   #renderTripInfo() {
     if (this.#events.length > 0) {
       render(new TripInfoView, this.headerContainer);
     }
-  }
-
-  #renderNewEventButton() {
-    render(new NewEventButtonView(), this.headerContainer);
   }
 }
