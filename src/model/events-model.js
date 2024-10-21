@@ -1,6 +1,7 @@
 import {updateItem} from '../utils.js';
 import Observable from '../framework/observable.js';
 import AdapterService from '../adapter-service.js';
+import {UpdateType} from '../presenter/events-presenter.js';
 
 export default class EventsModel extends Observable {
   #events = [];
@@ -30,6 +31,7 @@ export default class EventsModel extends Observable {
     } catch (error) {
       this.#events = [];
     }
+    this._notify(UpdateType.INIT);
   }
 
   updateEvent (updateType, updatedEvent) {

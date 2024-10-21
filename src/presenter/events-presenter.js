@@ -17,6 +17,7 @@ export const UpdateType = {
   PATCH: 'PATCH',
   MINOR: 'MINOR',
   MAJOR: 'MAJOR',
+  INIT: 'INIT',
 };
 
 export default class EventsPresenter {
@@ -186,6 +187,10 @@ export default class EventsPresenter {
     }
     if (updateType === UpdateType.MAJOR) {
       this.#clearContent({resetSortType: true});
+      this.#renderContent();
+    }
+    if (updateType === UpdateType.INIT) {
+      this.#clearContent();
       this.#renderContent();
     }
   };
