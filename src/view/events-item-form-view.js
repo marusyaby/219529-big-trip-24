@@ -86,7 +86,7 @@ export default class EventsItemFormView extends AbstractStatefulView {
 
     this.element
       .querySelector('.event__input--price')
-      .addEventListener('change', this.#eventPriceChangeHandler);
+      .addEventListener('input', this.#eventPriceInputHandler);
 
     this.element
       .querySelector('.event__available-offers')
@@ -188,6 +188,13 @@ export default class EventsItemFormView extends AbstractStatefulView {
       this.element.querySelector('.event__save-btn')
         .disabled = true;
     }
+
+    if (!isPriceInvalid) {
+      this.element.querySelector('.event__save-btn')
+        .disabled = false;
+      this.element.querySelector('.event__field-group--price').
+        classList.remove('event__field-group--invalid');
+    }
   }
 
   #closeFormClickHandler = (evt) => {
@@ -238,11 +245,12 @@ export default class EventsItemFormView extends AbstractStatefulView {
     this.#validateForm();
   };
 
-  #eventPriceChangeHandler = (evt) => {
+  #eventPriceInputHandler = (evt) => {
     evt.preventDefault();
     const newPrice = Number(evt.target.value);
 
-    this.updateElement({
+    this._setState({
+      ...this._state.event,
       basePrice: newPrice,
     });
 
