@@ -9,7 +9,6 @@ export default class DestinationsModel {
   async init() {
     try {
       this.#destinations = await this.#eventsApiService.destinations;
-      console.log('destinationsModel', this.#destinations);
     } catch (error) {
       this.#destinations = [];
     }

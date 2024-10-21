@@ -12,7 +12,6 @@ export default class OffersModel {
   async init() {
     try {
       this.#offers = await this.#eventsApiService.offers;
-      console.log('offersModel', this.#offers);
     } catch (error) {
       this.#offers = [];
     }
