@@ -17,6 +17,7 @@ export const UpdateType = {
   PATCH: 'PATCH',
   MINOR: 'MINOR',
   MAJOR: 'MAJOR',
+  INIT: 'INIT',
 };
 
 export default class EventsPresenter {
@@ -41,6 +42,8 @@ export default class EventsPresenter {
 
   #newEventButtonPresenter = null;
   #newEventPresenter = null;
+
+  #isLoading = true;
 
   constructor({eventsContainer, eventsModel, destinationsModel, offersModel, filtersModel, newEventButtonPresenter}) {
     this.#eventsContainer = eventsContainer;
@@ -124,6 +127,12 @@ export default class EventsPresenter {
   }
 
   #renderContent() {
+    if (this.#isLoading) {
+      this.#renderEventsMessage(EventsMessage.LOADING);
+      this.#newEventButtonPresenter.disable();
+      return;
+    }
+
     if (this.events.length === 0) {
       this.#renderEventsMessage(EventsMessage.EMPTY[this.#currentFilterType]);
       return;
@@ -186,6 +195,12 @@ export default class EventsPresenter {
     }
     if (updateType === UpdateType.MAJOR) {
       this.#clearContent({resetSortType: true});
+      this.#renderContent();
+    }
+    if (updateType === UpdateType.INIT) {
+      this.#isLoading = false;
+      this.#newEventButtonPresenter.enable();
+      this.#clearContent();
       this.#renderContent();
     }
   };
