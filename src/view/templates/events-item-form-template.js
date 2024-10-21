@@ -92,12 +92,20 @@ const createRollupButtonTemplate = () => `
                   </button>
 `;
 
-const createResetButtonTemplate = (isNewEvent) => `
-    <button class="event__reset-btn" type="reset">${isNewEvent ? 'Cancel' : 'Delete'}</button>
+const createResetButtonTemplate = (isNewEvent, isDeleting, isDisabled) => {
+  if (isNewEvent) {
+    return `<button class="event__reset-btn" type="reset" ${isDisabled ? 'disabled' : ''}>Cancel</button>`;
+  }
+
+  return `<button class="event__reset-btn" type="reset" ${isDisabled ? 'disabled' : ''}>${isDeleting ? 'Deleting' : 'Delete'}</button>`;
+};
+
+const createSubmitButtonTemplate = (isSaving, isDisabled) => `
+    <button class="event__save-btn  btn  btn--blue" type="submit" ${isDisabled ? 'disabled' : ''}>${isSaving ? 'Saving' : 'Save'}</button>
 `;
 
 export const createEventsItemFormTemplate = (isNewEvent, event, allDestinations) => {
-  const {id, type, dateFrom, dateTo, basePrice} = event;
+  const {id, type, dateFrom, dateTo, basePrice, isSaving, isDeleting, isDisabled} = event;
   const capitalizedType = capitalizeFirstLetter(type);
   const city = event.fullDestination?.name ?? '';
   const typesList = EVENT_TYPES.map((value) =>
@@ -110,7 +118,8 @@ export const createEventsItemFormTemplate = (isNewEvent, event, allDestinations)
   const endDate = dayjs(dateTo).isValid() ? formatDate(dateTo, Format.FULL_DATE) : '';
   const rollupButtonTemplate = isNewEvent ? '' : createRollupButtonTemplate();
   const formDetailsTemplate = createFormDetailsTemplate(event.fullDestination, event.offers, event.offersByType);
-  const resetButtonTemplate = createResetButtonTemplate(isNewEvent);
+  const resetButtonTemplate = createResetButtonTemplate(isNewEvent, isDeleting, isDisabled);
+  const submitButtonTemplate = createSubmitButtonTemplate(isSaving, isDisabled);
 
   return `
             <li class="trip-events__item">
@@ -164,7 +173,7 @@ export const createEventsItemFormTemplate = (isNewEvent, event, allDestinations)
 
                   </div>
 
-                  <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
+                  ${submitButtonTemplate}
 
                   ${resetButtonTemplate}
 

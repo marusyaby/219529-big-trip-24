@@ -6,6 +6,7 @@ import EventPresenter from './event-presenter.js';
 import {filterEvents, generateSortTypes, sortEvents} from '../utils.js';
 import {FilterType} from '../view/filters-view.js';
 import NewEventPresenter from './new-event-presenter.js';
+import UiBlocker from '../framework/ui-blocker/ui-blocker';
 
 export const UserAction = {
   UPDATE_EVENT: 'UPDATE_EVENT',
@@ -50,6 +51,10 @@ export default class EventsPresenter {
   #newEventPresenter = null;
 
   #isLoading = true;
+  #uiBlocker = new UiBlocker({
+    lowerLimit: TimeLimit.LOWER,
+    upperLimit: TimeLimit.UPPER,
+  });
 
   constructor({eventsContainer, eventsModel, destinationsModel, offersModel, filtersModel, newEventButtonPresenter}) {
     this.#eventsContainer = eventsContainer;
@@ -179,16 +184,30 @@ export default class EventsPresenter {
     this.#renderEventItems();
   };
 
-  #handleViewAction = (actionType, updateType, update) => {
+  #handleViewAction = async (actionType, updateType, update) => {
+    this.#uiBlocker.block();
+
     if (actionType === UserAction.UPDATE_EVENT) {
-      this.#eventsModel.updateEvent(updateType, update);
+      this.#eventPresenters.get(update.id).setSaving();
+      try {
+        await this.#eventsModel.updateEvent(updateType, update);
+      } catch (error) {
+        this.#eventPresenters.get(update.id).setAborting();
+      }
     }
     if (actionType === UserAction.ADD_EVENT) {
       this.#eventsModel.addEvent(updateType, update);
     }
     if (actionType === UserAction.DELETE_EVENT) {
-      this.#eventsModel.deleteEvent(updateType, update);
+      this.#eventPresenters.get(update.id).setDeleting();
+      try {
+        await this.#eventsModel.deleteEvent(updateType, update);
+      } catch (error) {
+        this.#eventPresenters.get(update.id).setAborting();
+      }
     }
+
+    this.#uiBlocker.unblock();
   };
 
   #modelEventHandler = (updateType, data) => {

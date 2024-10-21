@@ -91,6 +91,40 @@ export default class EventPresenter {
     }
   }
 
+  setSaving() {
+    if (this.#mode === Mode.EDIT_EVENT) {
+      this.#eventItemForm.updateElement({
+        isDisabled: true,
+        isSaving: true,
+      });
+    }
+  }
+
+  setDeleting() {
+    this.#eventItemForm.updateElement({
+      isDisabled: true,
+      isDeleting: true,
+    });
+  }
+
+  setAborting() {
+    if (this.#mode === Mode.VIEW_EVENT) {
+      this.#eventItem.shake();
+      return;
+    }
+    if (this.#mode === Mode.EDIT_EVENT) {
+      const resetFormState = () => {
+        this.#eventItemForm.updateElement({
+          isDisabled: false,
+          isSaving: false,
+          isDeleting: false,
+        });
+      };
+
+      this.#eventItemForm.shake(resetFormState);
+    }
+  }
+
   #replaceEventToForm() {
     replace(this.#eventItemForm, this.#eventItem);
     document.addEventListener('keydown', this.#escKeyDownHandler);
@@ -115,8 +149,7 @@ export default class EventPresenter {
   };
 
   #handleCloseFormClick = () => {
-    this.#eventItemForm.reset(this.#event);
-    this.#replaceFormToEvent();
+    this.resetView();
   };
 
   #handleFormSubmit = (updatedEvent) => {
@@ -133,8 +166,6 @@ export default class EventPresenter {
       currentUpdateType,
       updatedEvent,
     );
-
-    this.#replaceFormToEvent();
   };
 
   #handleFormDeleteClick = (deletedEvent) => {
@@ -158,8 +189,7 @@ export default class EventPresenter {
   #escKeyDownHandler = (evt) => {
     if (evt.key === 'Escape') {
       evt.preventDefault();
-      this.#eventItemForm.reset();
-      this.#replaceFormToEvent();
+      this.resetView();
       document.removeEventListener('keydown', this.#escKeyDownHandler);
     }
   };
