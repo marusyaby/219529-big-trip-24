@@ -53,6 +53,25 @@ export default class NewEventPresenter {
     document.removeEventListener('keydown', this.#escKeyDownHandler);
   }
 
+  setSaving = () => {
+    this.#newEventItemForm.updateElement({
+      isDisabled: true,
+      isSaving: true,
+    });
+  };
+
+  setAborting = () => {
+    const resetFormState = () => {
+      this.#newEventItemForm.updateElement({
+        isDisabled: false,
+        isSaving: false,
+        isDeleting: false,
+      });
+    };
+
+    this.#newEventItemForm.shake(resetFormState);
+  };
+
   #getOffersByType = (type) =>
     [...this.#offersModel.getOffersByType(type)];
 
@@ -71,7 +90,6 @@ export default class NewEventPresenter {
         id: nanoid(),
       },
     );
-    this.destroy();
   };
 
   #escKeyDownHandler = (evt) => {

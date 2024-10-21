@@ -196,7 +196,12 @@ export default class EventsPresenter {
       }
     }
     if (actionType === UserAction.ADD_EVENT) {
-      this.#eventsModel.addEvent(updateType, update);
+      this.#newEventPresenter.setSaving();
+      try {
+        await this.#eventsModel.addEvent(updateType, update);
+      } catch (error) {
+        this.#newEventPresenter.setAborting();
+      }
     }
     if (actionType === UserAction.DELETE_EVENT) {
       this.#eventPresenters.get(update.id).setDeleting();
