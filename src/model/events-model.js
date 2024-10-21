@@ -27,10 +27,11 @@ export default class EventsModel extends Observable {
       await Promise.all([this.#offersModel.init(), this.#destinationsModel.init()]);
       const events = await this.#eventsApiService.events;
       this.#events = events.map(this.#adapterService.adaptToClient);
+      this._notify(UpdateType.INIT);
     } catch (error) {
       this.#events = [];
+      this._notify(UpdateType.ERROR);
     }
-    this._notify(UpdateType.INIT);
   }
 
   async updateEvent (updateType, updatedEvent) {

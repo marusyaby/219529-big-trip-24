@@ -18,6 +18,12 @@ export const UpdateType = {
   MINOR: 'MINOR',
   MAJOR: 'MAJOR',
   INIT: 'INIT',
+  ERROR: 'ERROR',
+};
+
+const TimeLimit = {
+  LOWER: 350,
+  UPPER: 1000,
 };
 
 export default class EventsPresenter {
@@ -133,7 +139,7 @@ export default class EventsPresenter {
       return;
     }
 
-    if (this.events.length === 0) {
+    if (!this.events.length) {
       this.#renderEventsMessage(EventsMessage.EMPTY[this.#currentFilterType]);
       return;
     }
@@ -202,6 +208,12 @@ export default class EventsPresenter {
       this.#newEventButtonPresenter.enable();
       this.#clearContent();
       this.#renderContent();
+    }
+    if (updateType === UpdateType.ERROR) {
+      this.#isLoading = false;
+      this.#newEventButtonPresenter.disable();
+      this.#clearContent();
+      this.#renderEventsMessage(EventsMessage.FAIL);
     }
   };
 
