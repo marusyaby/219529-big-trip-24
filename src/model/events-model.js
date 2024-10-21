@@ -1,38 +1,35 @@
-import {getRandomElement, updateItem} from '../utils.js';
-import {eventsMock} from '../mock/events-mock.js';
+import {updateItem} from '../utils.js';
 import Observable from '../framework/observable.js';
 import AdapterService from '../adapter-service.js';
 
-const EVENTS_COUNT = 5;
-
 export default class EventsModel extends Observable {
-  #events = Array.from(new Set(Array.from({length: EVENTS_COUNT}, () =>
-    getRandomElement(eventsMock))));
+  #events = [];
 
   #eventsApiService = null;
   #adapterService = new AdapterService();
+  #offersModel = null;
+  #destinationsModel = null;
 
-
-  constructor({eventsApiService}) {
+  constructor({eventsApiService, offersModel, destinationsModel}) {
     super();
     this.#eventsApiService = eventsApiService;
-
-    this.#eventsApiService.events.then((events) => {
-      console.log(events);
-      console.log('adaptedEvents', events.map(this.#adapterService.adaptToClient));
-    });
-
-    this.#eventsApiService.destinations.then((destinations) => {
-      console.log(destinations);
-    });
-
-    this.#eventsApiService.offers.then((offers) => {
-      console.log(offers);
-    });
+    this.#offersModel = offersModel;
+    this.#destinationsModel = destinationsModel;
   }
 
   get events() {
     return this.#events;
+  }
+
+  async init() {
+    try {
+      await Promise.all([this.#offersModel.init(), this.#destinationsModel.init()]);
+      const events = await this.#eventsApiService.events;
+      this.#events = events.map(this.#adapterService.adaptToClient);
+      console.log(this.#events);
+    } catch (error) {
+      this.#events = [];
+    }
   }
 
   updateEvent (updateType, updatedEvent) {

@@ -15,11 +15,19 @@ const headerElement = document.querySelector('.trip-main');
 const eventsElement = document.body.querySelector('.trip-events');
 
 const eventsApiService = new EventsApiService(END_POINT, AUTHORIZATION);
-const eventsModel = new EventsModel({
+
+const offersModel = new OffersModel({
   eventsApiService
 });
-const destinationsModel = new DestinationsModel();
-const offersModel = new OffersModel();
+const destinationsModel = new DestinationsModel({
+  eventsApiService
+});
+const eventsModel = new EventsModel({
+  eventsApiService,
+  offersModel,
+  destinationsModel
+});
+
 const filtersModel = new FiltersModel();
 
 const tripInfoPresenter = new TripInfoPresenter({
@@ -48,6 +56,9 @@ function getButtonClickHandler() {
   return eventsPresenter.newEventButtonClickHandler();
 }
 
+// offersModel.init();
+// destinationsModel.init();
+eventsModel.init();
 tripInfoPresenter.init();
 eventsPresenter.init();
 filtersPresenter.init();
