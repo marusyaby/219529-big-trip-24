@@ -6,11 +6,18 @@ import OffersModel from './model/offers-model.js';
 import FiltersModel from './model/filters-model.js';
 import FiltersPresenter from './presenter/filters-presenter.js';
 import NewEventButtonPresenter from './presenter/new-event-button-presenter.js';
+import EventsApiService from './events-api-service.js';
+
+const AUTHORIZATION = 'Basic mashaSuperProgrammer';
+const END_POINT = 'https://24.objects.htmlacademy.pro/big-trip';
 
 const headerElement = document.querySelector('.trip-main');
 const eventsElement = document.body.querySelector('.trip-events');
 
-const eventsModel = new EventsModel();
+const eventsApiService = new EventsApiService(END_POINT, AUTHORIZATION);
+const eventsModel = new EventsModel({
+  eventsApiService
+});
 const destinationsModel = new DestinationsModel();
 const offersModel = new OffersModel();
 const filtersModel = new FiltersModel();
