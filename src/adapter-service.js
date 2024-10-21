@@ -41,6 +41,8 @@ export default class AdapterService {
     delete adaptedEvent.dateFrom;
     delete adaptedEvent.dateTo;
     delete adaptedEvent.isFavorite;
+    delete adaptedEvent.fullDestination;
+    delete adaptedEvent.offersByType;
 
     return adaptedEvent;
   }

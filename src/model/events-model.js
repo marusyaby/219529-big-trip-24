@@ -34,9 +34,15 @@ export default class EventsModel extends Observable {
     this._notify(UpdateType.INIT);
   }
 
-  updateEvent (updateType, updatedEvent) {
-    this.#events = updateItem(updatedEvent, this.#events);
-    this._notify(updateType, updatedEvent);
+  async updateEvent (updateType, updatedEvent) {
+    try {
+      const response = await this.#eventsApiService.updateEvent(updatedEvent);
+      const adaptedEvent = this.#adapterService.adaptToClient(response);
+      this.#events = updateItem(adaptedEvent, this.#events);
+      this._notify(updateType, adaptedEvent);
+    } catch (error) {
+      throw new Error('Can\'t update point');
+    }
   }
 
   addEvent (updateType, updatedEvent) {
