@@ -92,12 +92,12 @@ const createRollupButtonTemplate = () => `
                   </button>
 `;
 
-const createResetButtonTemplate = (isNewEvent, isDeleting, isDisabled) => {
+const createResetButtonTemplate = (isNewEvent, isDeleting) => {
   if (isNewEvent) {
-    return `<button class="event__reset-btn" type="reset" ${isDisabled ? 'disabled' : ''}>Cancel</button>`;
+    return '<button class="event__reset-btn" type="reset">Cancel</button>';
   }
 
-  return `<button class="event__reset-btn" type="reset" ${isDisabled ? 'disabled' : ''}>${isDeleting ? 'Deleting...' : 'Delete'}</button>`;
+  return `<button class="event__reset-btn" type="reset">${isDeleting ? 'Deleting...' : 'Delete'}</button>`;
 };
 
 const createSubmitButtonTemplate = (isSaving, isDisabled) => `
@@ -118,7 +118,7 @@ export const createEventsItemFormTemplate = (isNewEvent, event, allDestinations)
   const endDate = dayjs(dateTo).isValid() ? formatDate(dateTo, Format.FULL_DATE) : '';
   const rollupButtonTemplate = isNewEvent ? '' : createRollupButtonTemplate();
   const formDetailsTemplate = createFormDetailsTemplate(event.fullDestination, event.offers, event.offersByType);
-  const resetButtonTemplate = createResetButtonTemplate(isNewEvent, isDeleting, isDisabled);
+  const resetButtonTemplate = createResetButtonTemplate(isNewEvent, isDeleting);
   const submitButtonTemplate = createSubmitButtonTemplate(isSaving, isDisabled);
 
   return `
