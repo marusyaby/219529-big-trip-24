@@ -5,9 +5,12 @@ import {EnabledSortType, SortType} from './view/events-sort-view.js';
 dayjs.extend(duration);
 
 export const Format = {
-  DATE: 'MMM[ ]DD',
-  TIME: 'HH:mm',
+  MONTH_DAY: 'MMM[ ]DD',
+  DAY_MONTH: 'DD[ ]MMM',
   FULL_DATE: 'DD/MM/YY[ ]HH:mm',
+  DAY: 'DD',
+  TIME: 'HH:mm',
+
   DURATION: {
     MINUTES: 'mm[M]',
     HOURS: 'HH[H] mm[M]',
