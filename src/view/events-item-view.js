@@ -28,7 +28,7 @@ export default class EventsItemView extends AbstractView {
       .addEventListener('click', this.#openFormClickHandler);
 
     this.element
-      .querySelector('.event__favorite-icon')
+      .querySelector('.event__favorite-btn')
       .addEventListener('click', this.#favoriteClickHandler);
   }
 
