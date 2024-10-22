@@ -270,6 +270,9 @@ export default class EventsItemFormView extends AbstractStatefulView {
     return {...event,
       fullDestination,
       offersByType,
+      isDisabled: false,
+      isSaving: false,
+      isDeleting: false,
     };
   }
 

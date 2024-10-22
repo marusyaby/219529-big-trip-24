@@ -43,6 +43,10 @@ export default class AdapterService {
     delete adaptedEvent.isFavorite;
     delete adaptedEvent.fullDestination;
     delete adaptedEvent.offersByType;
+    delete adaptedEvent.id;
+    delete adaptedEvent.isSaving;
+    delete adaptedEvent.isDisabled;
+    delete adaptedEvent.isDeleting;
 
     return adaptedEvent;
   }

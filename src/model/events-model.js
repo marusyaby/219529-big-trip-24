@@ -27,10 +27,11 @@ export default class EventsModel extends Observable {
       await Promise.all([this.#offersModel.init(), this.#destinationsModel.init()]);
       const events = await this.#eventsApiService.events;
       this.#events = events.map(this.#adapterService.adaptToClient);
+      this._notify(UpdateType.INIT);
     } catch (error) {
       this.#events = [];
+      this._notify(UpdateType.ERROR);
     }
-    this._notify(UpdateType.INIT);
   }
 
   async updateEvent (updateType, updatedEvent) {
@@ -40,17 +41,28 @@ export default class EventsModel extends Observable {
       this.#events = updateItem(adaptedEvent, this.#events);
       this._notify(updateType, adaptedEvent);
     } catch (error) {
-      throw new Error('Can\'t update point');
+      throw new Error('Can\'t update event');
     }
   }
 
-  addEvent (updateType, updatedEvent) {
-    this.#events = [updatedEvent, ...this.#events];
-    this._notify(updateType, updatedEvent);
+  async addEvent (updateType, newEvent) {
+    try {
+      const response = await this.#eventsApiService.addEvent(newEvent);
+      const adaptedNewEvent = this.#adapterService.adaptToClient(response);
+      this.#events = [adaptedNewEvent, ...this.#events];
+      this._notify(updateType, adaptedNewEvent);
+    } catch (error) {
+      throw new Error('Can\'t add event');
+    }
   }
 
-  deleteEvent (updateType, updatedEvent) {
-    this.#events = this.#events.filter((item)=>item.id !== updatedEvent.id);
-    this._notify(updateType);
+  async deleteEvent (updateType, deletedEvent) {
+    try {
+      await this.#eventsApiService.deleteEvent(deletedEvent);
+      this.#events = this.#events.filter((item)=>item.id !== deletedEvent.id);
+      this._notify(updateType);
+    } catch (error) {
+      throw new Error('Can\'t delete event');
+    }
   }
 }
