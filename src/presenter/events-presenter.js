@@ -6,7 +6,7 @@ import EventPresenter from './event-presenter.js';
 import {filterEvents, generateSortTypes, sortEvents} from '../utils.js';
 import {FilterType} from '../view/filters-view.js';
 import NewEventPresenter from './new-event-presenter.js';
-import UiBlocker from '../framework/ui-blocker/ui-blocker';
+import UiBlocker from '../framework/ui-blocker/ui-blocker.js';
 
 export const UserAction = {
   UPDATE_EVENT: 'UPDATE_EVENT',

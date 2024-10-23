@@ -27,12 +27,13 @@ const eventsModel = new EventsModel({
   offersModel,
   destinationsModel
 });
-
 const filtersModel = new FiltersModel();
 
 const tripInfoPresenter = new TripInfoPresenter({
   headerContainer: headerElement,
-  eventsModel
+  eventsModel,
+  offersModel,
+  destinationsModel
 });
 const filtersPresenter = new FiltersPresenter({
   headerContainer: headerElement,
@@ -49,15 +50,15 @@ const eventsPresenter = new EventsPresenter({
   destinationsModel,
   offersModel,
   filtersModel,
-  newEventButtonPresenter,
+  newEventButtonPresenter
 });
 
 function getButtonClickHandler() {
   return eventsPresenter.newEventButtonClickHandler();
 }
 
-tripInfoPresenter.init();
 filtersPresenter.init();
-newEventButtonPresenter.init();
 eventsModel.init();
+newEventButtonPresenter.init();
 eventsPresenter.init();
+tripInfoPresenter.init();
