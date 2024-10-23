@@ -1,4 +1,4 @@
-import {remove, render, RenderPosition, replace} from '../framework/render.js';
+import {remove, render, replace} from '../framework/render.js';
 import {generateFilterTypes} from '../utils.js';
 import FiltersView from '../view/filters-view.js';
 import {UpdateType} from './events-presenter.js';
