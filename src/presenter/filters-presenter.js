@@ -22,7 +22,7 @@ export default class FiltersPresenter {
 
   init() {
     this.#currentFilterType = this.#filtersModel.filter;
-    const prevFiltersComponent = this.#filtersComponent;
+    const previousFiltersComponent = this.#filtersComponent;
     this.#filterTypes = generateFilterTypes(this.#eventsModel.events, this.#currentFilterType);
 
     this.#filtersComponent = new FiltersView({
@@ -30,13 +30,13 @@ export default class FiltersPresenter {
       onItemChange: this.#handleFilterTypeChange,
     });
 
-    if (!prevFiltersComponent) {
+    if (!previousFiltersComponent) {
       render(this.#filtersComponent, this.#headerContainer);
       return;
     }
 
-    replace(this.#filtersComponent, prevFiltersComponent);
-    remove(prevFiltersComponent);
+    replace(this.#filtersComponent, previousFiltersComponent);
+    remove(previousFiltersComponent);
   }
 
   #handleFilterTypeChange = (filterType) => {

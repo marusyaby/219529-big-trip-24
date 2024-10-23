@@ -27,7 +27,6 @@ const eventsModel = new EventsModel({
   offersModel,
   destinationsModel
 });
-
 const filtersModel = new FiltersModel();
 
 const tripInfoPresenter = new TripInfoPresenter({
