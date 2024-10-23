@@ -102,3 +102,6 @@ export const generateFilterTypes = (events, activeFilterType) =>
 
 export const updateItem = (updatedItem, items) =>
   items.map((item) => item.id === updatedItem.id ? updatedItem : item);
+
+export const getUniqueElements = (elements) =>
+  Array.from(new Set(elements));

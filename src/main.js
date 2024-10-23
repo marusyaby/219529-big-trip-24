@@ -8,7 +8,7 @@ import FiltersPresenter from './presenter/filters-presenter.js';
 import NewEventButtonPresenter from './presenter/new-event-button-presenter.js';
 import EventsApiService from './events-api-service.js';
 
-const AUTHORIZATION = 'Basic mashaSuperProgrammer888';
+const AUTHORIZATION = 'Basic mashaSuperProgrammer';
 const END_POINT = 'https://24.objects.htmlacademy.pro/big-trip';
 
 const headerElement = document.querySelector('.trip-main');
@@ -27,7 +27,6 @@ const eventsModel = new EventsModel({
   offersModel,
   destinationsModel
 });
-
 const filtersModel = new FiltersModel();
 
 const tripInfoPresenter = new TripInfoPresenter({
@@ -58,9 +57,8 @@ function getButtonClickHandler() {
   return eventsPresenter.newEventButtonClickHandler();
 }
 
-
 filtersPresenter.init();
-newEventButtonPresenter.init();
 eventsModel.init();
+newEventButtonPresenter.init();
 eventsPresenter.init();
-// tripInfoPresenter.init();
+tripInfoPresenter.init();

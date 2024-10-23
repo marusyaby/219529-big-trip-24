@@ -44,6 +44,7 @@ export default class TripInfoPresenter {
 
     replace(this.#tripInfo, previousTripInfo);
     remove(previousTripInfo);
+
     render(this.#tripInfo, this.#headerContainer, RenderPosition.AFTERBEGIN);
   }
 
