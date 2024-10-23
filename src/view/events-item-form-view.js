@@ -118,6 +118,42 @@ export default class EventsItemFormView extends AbstractStatefulView {
     }
   };
 
+  #validateForm () {
+    const isPriceInvalid =
+      !Number.isSafeInteger(this._state.basePrice) ||
+      this._state.basePrice <= 0 ||
+      this._state.basePrice > MAX_PRICE;
+    const isDestinationInvalid = !this._state.fullDestination;
+    const isDateInvalid =
+      dayjs(this._state.dateTo).isBefore(this._state.dateFrom) ||
+      !this._state.dateFrom ||
+      !this._state.dateTo;
+
+    if (isPriceInvalid) {
+      this.element.querySelector('.event__field-group--price').
+        classList.add('event__field-group--invalid');
+    }
+    if (isDestinationInvalid) {
+      this.element.querySelector('.event__field-group--destination').
+        classList.add('event__field-group--invalid');
+    }
+    if (isDateInvalid) {
+      this.element.querySelector('.event__field-group--time').
+        classList.add('event__field-group--invalid');
+    }
+    if (isPriceInvalid || isDestinationInvalid || isDateInvalid) {
+      this.element.querySelector('.event__save-btn')
+        .disabled = true;
+    }
+
+    if (!isPriceInvalid) {
+      this.element.querySelector('.event__save-btn')
+        .disabled = false;
+      this.element.querySelector('.event__field-group--price').
+        classList.remove('event__field-group--invalid');
+    }
+  }
+
   #setDatepickers = () => {
     const startDateElement = this.element.querySelector('.event__input--time[name="event-start-time"]');
     const endDateElement = this.element.querySelector('.event__input--time[name="event-end-time"]');
@@ -160,42 +196,6 @@ export default class EventsItemFormView extends AbstractStatefulView {
     });
     this.#validateForm();
   };
-
-  #validateForm () {
-    const isPriceInvalid =
-      !Number.isSafeInteger(this._state.basePrice) ||
-      this._state.basePrice <= 0 ||
-      this._state.basePrice > MAX_PRICE;
-    const isDestinationInvalid = !this._state.fullDestination;
-    const isDateInvalid =
-      dayjs(this._state.dateTo).isBefore(this._state.dateFrom) ||
-      !this._state.dateFrom ||
-      !this._state.dateTo;
-
-    if (isPriceInvalid) {
-      this.element.querySelector('.event__field-group--price').
-        classList.add('event__field-group--invalid');
-    }
-    if (isDestinationInvalid) {
-      this.element.querySelector('.event__field-group--destination').
-        classList.add('event__field-group--invalid');
-    }
-    if (isDateInvalid) {
-      this.element.querySelector('.event__field-group--time').
-        classList.add('event__field-group--invalid');
-    }
-    if (isPriceInvalid || isDestinationInvalid || isDateInvalid) {
-      this.element.querySelector('.event__save-btn')
-        .disabled = true;
-    }
-
-    if (!isPriceInvalid) {
-      this.element.querySelector('.event__save-btn')
-        .disabled = false;
-      this.element.querySelector('.event__field-group--price').
-        classList.remove('event__field-group--invalid');
-    }
-  }
 
   #closeFormClickHandler = (evt) => {
     evt.preventDefault(evt);
