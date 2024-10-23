@@ -29,12 +29,6 @@ const eventsModel = new EventsModel({
 });
 const filtersModel = new FiltersModel();
 
-const tripInfoPresenter = new TripInfoPresenter({
-  headerContainer: headerElement,
-  eventsModel,
-  offersModel,
-  destinationsModel
-});
 const filtersPresenter = new FiltersPresenter({
   headerContainer: headerElement,
   eventsModel,
@@ -54,11 +48,17 @@ const eventsPresenter = new EventsPresenter({
 });
 
 function getButtonClickHandler() {
-  return eventsPresenter.newEventButtonClickHandler();
+  return eventsPresenter.handleNewEventButtonClick();
 }
+
+new TripInfoPresenter({
+  headerContainer: headerElement,
+  eventsModel,
+  offersModel,
+  destinationsModel
+});
 
 filtersPresenter.init();
 eventsModel.init();
 newEventButtonPresenter.init();
 eventsPresenter.init();
-tripInfoPresenter.init();

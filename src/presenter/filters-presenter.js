@@ -16,8 +16,8 @@ export default class FiltersPresenter {
     this.#eventsModel = eventsModel;
     this.#filtersModel = filtersModel;
 
-    this.#eventsModel.addObserver(this.#modelEventHandler);
-    this.#filtersModel.addObserver(this.#modelEventHandler);
+    this.#eventsModel.addObserver(this.#handleModelEvent);
+    this.#filtersModel.addObserver(this.#handleModelEvent);
   }
 
   init() {
@@ -43,7 +43,7 @@ export default class FiltersPresenter {
     this.#filtersModel.setFilter(UpdateType.MAJOR, filterType);
   };
 
-  #modelEventHandler = () => {
+  #handleModelEvent = () => {
     this.init();
   };
 }

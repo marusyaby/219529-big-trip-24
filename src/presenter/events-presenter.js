@@ -70,11 +70,11 @@ export default class EventsPresenter {
       destinationsModel: this.#destinationsModel,
       offersModel: this.#offersModel,
       onDataChange: this.#handleViewAction,
-      onDestroy: this.#newEventDestroyHandler,
+      onDestroy: this.#handleNewEventDestroy,
     });
 
-    this.#filtersModel.addObserver(this.#modelEventHandler);
-    this.#eventsModel.addObserver(this.#modelEventHandler);
+    this.#filtersModel.addObserver(this.#handleModelEvent);
+    this.#eventsModel.addObserver(this.#handleModelEvent);
   }
 
   get events() {
@@ -88,7 +88,7 @@ export default class EventsPresenter {
     this.#renderContent();
   }
 
-  newEventButtonClickHandler = () => {
+  handleNewEventButtonClick = () => {
     this.#currentSortType = this.#defaultSortType;
     this.#filtersModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
     this.#newEventButtonPresenter.disable();
@@ -215,7 +215,7 @@ export default class EventsPresenter {
     this.#uiBlocker.unblock();
   };
 
-  #modelEventHandler = (updateType, data) => {
+  #handleModelEvent = (updateType, data) => {
     if (updateType === UpdateType.PATCH) {
       this.#eventPresenters?.get(data.id)?.init(data);
     }
@@ -241,7 +241,7 @@ export default class EventsPresenter {
     }
   };
 
-  #newEventDestroyHandler = () => {
+  #handleNewEventDestroy = () => {
     this.#newEventButtonPresenter.enable();
     if (this.events.length === 0) {
       this.#renderContent();

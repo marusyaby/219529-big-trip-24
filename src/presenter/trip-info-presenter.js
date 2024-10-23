@@ -24,7 +24,7 @@ export default class TripInfoPresenter {
     this.#offersModel = offersModel;
     this.#destinationsModel = destinationsModel;
 
-    this.#eventsModel.addObserver(this.#ModelEventHandler);
+    this.#eventsModel.addObserver(this.#handleModelEvent);
   }
 
   init() {
@@ -74,7 +74,7 @@ export default class TripInfoPresenter {
     this.#tripEndDay = this.#events[this.#events.length - 1]?.dateTo;
   }
 
-  #ModelEventHandler = (updateType) => {
+  #handleModelEvent = (updateType) => {
     if (updateType === UpdateType.ERROR) {
       return;
     }
