@@ -220,8 +220,6 @@ export default class EventsItemFormView extends AbstractStatefulView {
       dateFrom: enteredDate ?? ''
     });
 
-    this.#setMinEndDate();
-
     this.#validateForm();
   };
 
