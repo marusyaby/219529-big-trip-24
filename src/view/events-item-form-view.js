@@ -71,6 +71,11 @@ export default class EventsItemFormView extends AbstractStatefulView {
     }
 
     this.element
+      .querySelectorAll('.event__input')
+      .forEach((input) =>
+        input.addEventListener('blur', this.#inputBlurHandler));
+
+    this.element
       .querySelector('.event__save-btn')
       .addEventListener('click', this.#saveFormClickHandler);
 
@@ -80,7 +85,7 @@ export default class EventsItemFormView extends AbstractStatefulView {
 
     this.element
       .querySelector('.event__reset-btn')
-      .addEventListener('click', this.#formDeleteClicktHandler);
+      .addEventListener('click', this.#formDeleteClickHandler);
 
     this.element
       .querySelector('.event__type-group')
@@ -92,7 +97,15 @@ export default class EventsItemFormView extends AbstractStatefulView {
 
     this.element
       .querySelector('.event__input--price')
+      .addEventListener('focus', this.#eventPriceFocusHandler);
+
+    this.element
+      .querySelector('.event__input--price')
       .addEventListener('input', this.#eventPriceInputHandler);
+
+    this.element
+      .querySelector('.event__input--price')
+      .addEventListener('blur', this.#eventPriceBlurHandler);
 
     this.element
       .querySelector('.event__available-offers')
@@ -213,6 +226,7 @@ export default class EventsItemFormView extends AbstractStatefulView {
   };
 
   #endDateOpenHandler = () => {
+    this.#setMinEndDate();
     this.#datepickerTo.set('minDate', this.#minEndDate);
   };
 
@@ -222,7 +236,11 @@ export default class EventsItemFormView extends AbstractStatefulView {
       dateTo: enteredDate ?? ''
     });
 
-    this.#datepickerTo.input.value = flatpickr.formatDate(this._state.dateTo, 'd/m/y H:i');
+    if (this._state.dateTo) {
+      this.#datepickerTo.input.value = flatpickr.formatDate(this._state.dateTo,
+        'd/m/y H:i');
+    }
+
     this.#validateForm();
   };
 
@@ -230,13 +248,15 @@ export default class EventsItemFormView extends AbstractStatefulView {
     if (this._state.dateTo) {
       this.#datepickerTo.input.value = flatpickr.formatDate(this._state.dateTo, 'd/m/y H:i');
     }
-
-    this.#validateForm();
   };
 
   #closeFormClickHandler = (evt) => {
     evt.preventDefault(evt);
     this.#handleCloseFormClick(EventsItemFormView.parseStateToEvent(this.#initialEvent));
+  };
+
+  #inputBlurHandler = () => {
+    this.#validateForm();
   };
 
   #saveFormClickHandler = () => {
@@ -248,7 +268,7 @@ export default class EventsItemFormView extends AbstractStatefulView {
     this.#handleFormSubmit(EventsItemFormView.parseStateToEvent(this._state));
   };
 
-  #formDeleteClicktHandler = (evt) => {
+  #formDeleteClickHandler = (evt) => {
     evt.preventDefault();
     this.#handleFormDeleteClick(this._state);
   };
@@ -282,8 +302,15 @@ export default class EventsItemFormView extends AbstractStatefulView {
         destination: newDestination.id,
       });
     }
+  };
 
-    this.#validateForm();
+  #eventPriceFocusHandler = () => {
+    const eventPriceInput = this.element
+      .querySelector('.event__input--price');
+
+    if (eventPriceInput.value === '0') {
+      eventPriceInput.value = '';
+    }
   };
 
   #eventPriceInputHandler = (evt) => {
@@ -295,11 +322,16 @@ export default class EventsItemFormView extends AbstractStatefulView {
       basePrice: newPrice,
     });
 
-    this.element
-      .querySelector('.event__input--price')
-      .value = newPrice;
-
     this.#validateForm();
+  };
+
+  #eventPriceBlurHandler = () => {
+    const eventPriceInput = this.element
+      .querySelector('.event__input--price');
+
+    if (eventPriceInput.value === '') {
+      eventPriceInput.value = '0';
+    }
   };
 
   #offerChangeHandler = () => {
